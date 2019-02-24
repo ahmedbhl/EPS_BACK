@@ -1,10 +1,12 @@
 package com.app.boot.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,9 +37,9 @@ public class User implements Serializable {
 
 	private String password;
 
-	@ManyToMany
-	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private Collection<Role> roles;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles;
 
 	private boolean enabled;
 
@@ -46,7 +48,7 @@ public class User implements Serializable {
 	private String familyName;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date yearOfResitration;
+	private Date yearOfRegistration;
 
 	private String phoneNumber;
 
@@ -70,7 +72,7 @@ public class User implements Serializable {
 		this.enabled = user.isEnabled();
 		this.firstName = user.getFirstName();
 		this.familyName = user.getFamilyName();
-		this.yearOfResitration = user.getYearOfResitration();
+		this.yearOfRegistration = user.getYearOfRegistration();
 		this.phoneNumber = user.getPhoneNumber();
 		this.profilPicture = user.getProfilPicture();
 		this.sex = user.getSex();
@@ -102,11 +104,11 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Collection<Role> getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Collection<Role> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 
@@ -134,12 +136,12 @@ public class User implements Serializable {
 		this.familyName = familyName;
 	}
 
-	public Date getYearOfResitration() {
-		return yearOfResitration;
+	public Date getYearOfRegistration() {
+		return yearOfRegistration;
 	}
 
-	public void setYearOfResitration(Date yearOfResitration) {
-		this.yearOfResitration = yearOfResitration;
+	public void setYearOfRegistration(Date yearOfRegistration) {
+		this.yearOfRegistration = yearOfRegistration;
 	}
 
 	public String getPhoneNumber() {

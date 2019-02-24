@@ -7,13 +7,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.boot.model.CustomUserDetails;
 import com.app.boot.model.User;
 import com.app.boot.repository.UserReposiroty;
 
 @Service
-public class CustomUserService implements UserDetailsService {
+@Transactional
+public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UserReposiroty userRepository;

@@ -8,11 +8,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.app.boot.repository.UserReposiroty;
-import com.app.boot.service.CustomUserService;
 
 @EnableWebSecurity
 @EnableJpaRepositories(basePackageClasses = UserReposiroty.class)
@@ -20,7 +19,7 @@ import com.app.boot.service.CustomUserService;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	CustomUserService userDetailsService;
+	UserDetailsService userDetailsService;
 
 	/**
 	 * Role of the super admin
@@ -44,41 +43,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(encodePWD());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
 		// @formatter:off
-		http.csrf().disable()
-		.antMatcher("/api/v1/**")
-		.authorizeRequests()
-		.antMatchers("/api/v1/user/**").hasAnyRole(SUPER_ADMIN)
-				.anyRequest()
-				.fullyAuthenticated()
-				.and()
+		http.csrf().disable();
+		http.authorizeRequests().antMatchers("/api/v1/users/**")
+				.hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR).anyRequest().fullyAuthenticated().and()
 				.formLogin().permitAll();
 
 	}
 
-	private PasswordEncoder getPasswordEncoder() {
-		return new PasswordEncoder() {
-
-			@Override
-			public boolean matches(CharSequence rawPassword, String encodedPassword) {
-				return true;
-			}
-
-			@Override
-			public String encode(CharSequence rawPassword) {
-				return rawPassword.toString();
-			}
-		};
-	}
-
 	@Bean
-	public PasswordEncoder encoder() {
+	public BCryptPasswordEncoder encodePWD() {
 		return new BCryptPasswordEncoder();
 	}
 
