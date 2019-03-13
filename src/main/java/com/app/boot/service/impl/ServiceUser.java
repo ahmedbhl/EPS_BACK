@@ -4,25 +4,36 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.boot.exception.CodeOperationException;
+import com.app.boot.model.CustomUserDetails;
 import com.app.boot.model.User;
 import com.app.boot.repository.UserReposiroty;
 import com.app.boot.service.IServiceUser;
 
 @Service
 @Transactional
-public class ServiceUser implements IServiceUser {
+public class ServiceUser implements IServiceUser, UserDetailsService {
 
 	@Autowired
 	private UserReposiroty userRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Optional<User> optionalUser = userRepository.getUserByEmail(email);
+		optionalUser.orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+		return optionalUser.map(CustomUserDetails::new).get();
+	}
 
 	/*
 	 * (non-Javadoc)

@@ -5,6 +5,6 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 	<!-- include des fichiers qui doivent être joués par liquibase comme exemple-->
-	<!-- <include file="db-changelog-1.0-init.xml" relativeToChangelogFile="true" />-->
+	 <include file="db-changelog-1.0-init.xml" relativeToChangelogFile="true" />
 	
 </databaseChangeLog>
