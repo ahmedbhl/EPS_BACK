@@ -81,4 +81,18 @@ public class ServiceUser implements IServiceUser, UserDetailsService {
 		return userRepository.save(updatedUser);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.app.boot.IServiceUser#deleteUser
+	 */
+	@Override
+	public User deleteUser(Long id) {
+		User deletedUser = userRepository.findById(id)
+				.orElseThrow(() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+						id.toString()));
+		userRepository.delete(deletedUser);
+		return deletedUser;
+	}
+
 }

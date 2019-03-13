@@ -38,4 +38,12 @@ public interface IServiceUser {
 	 */
 	User updateUser(User user);
 
+	/**
+	 * Delete the User
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User deleteUser(Long id);
+
 }
