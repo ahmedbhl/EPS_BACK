@@ -58,7 +58,7 @@ public class UserRestController {
 	 * Adding pairing message
 	 */
 
-	private static final String ADDING_MESSAGE = "Adding new Usere";
+	private static final String ADDING_MESSAGE = "Adding new User";
 
 	/**
 	 * Delete pairing message

@@ -41,43 +41,32 @@ public class User implements Serializable {
 	@JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
-	private boolean enabled;
-
-	private String firstName;
-
-	private String familyName;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date yearOfRegistration;
 
 	private String phoneNumber;
 
-	private String profilPicture;
-
-	private String sex;
+	private String profilePicture;
 
 	private String address;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date creationDate;
+	private boolean status;
 
 	public User() {
 	}
 
-	public User(User user) {
-		this.id = user.getId();
-		this.email = user.getEmail();
-		this.password = user.getPassword();
-		this.roles = user.getRoles();
-		this.enabled = user.isEnabled();
-		this.firstName = user.getFirstName();
-		this.familyName = user.getFamilyName();
-		this.yearOfRegistration = user.getYearOfRegistration();
-		this.phoneNumber = user.getPhoneNumber();
-		this.profilPicture = user.getProfilPicture();
-		this.sex = user.getSex();
-		this.address = user.getAddress();
-		this.creationDate = user.getCreationDate();
+	public User(Long id, String email, String password, Set<Role> roles, Date yearOfRegistration, String phoneNumber,
+			String profilePicture, String address, boolean status) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.roles = roles;
+		this.yearOfRegistration = yearOfRegistration;
+		this.phoneNumber = phoneNumber;
+		this.profilePicture = profilePicture;
+		this.address = address;
+		this.status = status;
 	}
 
 	public Long getId() {
@@ -112,30 +101,6 @@ public class User implements Serializable {
 		this.roles = roles;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getFamilyName() {
-		return familyName;
-	}
-
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
-
 	public Date getYearOfRegistration() {
 		return yearOfRegistration;
 	}
@@ -152,20 +117,12 @@ public class User implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getProfilPicture() {
-		return profilPicture;
+	public String getProfilePicture() {
+		return profilePicture;
 	}
 
-	public void setProfilPicture(String profilPicture) {
-		this.profilPicture = profilPicture;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 	}
 
 	public String getAddress() {
@@ -176,12 +133,16 @@ public class User implements Serializable {
 		this.address = address;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public boolean isStatus() {
+		return status;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

@@ -15,7 +15,8 @@ public class CustomUserDetails extends User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	public CustomUserDetails(final User user) {
-		super(user);
+		//
+		super();
 	}
 
 	@Override
