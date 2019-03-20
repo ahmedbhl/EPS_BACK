@@ -63,9 +63,6 @@ public class Professor extends User implements Serializable {
 		this.classes = classes;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 
 	public Set<Course> getCourses() {
 		return courses;
@@ -73,6 +70,10 @@ public class Professor extends User implements Serializable {
 
 	public void setCourses(Set<Course> courses) {
 		this.courses = courses;
+
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }

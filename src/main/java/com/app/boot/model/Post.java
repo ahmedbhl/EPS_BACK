@@ -82,6 +82,7 @@ public class Post implements Serializable {
 		this.group = group;
 	}
 
+
 	public User getUser() {
 		return user;
 	}
@@ -98,4 +99,7 @@ public class Post implements Serializable {
 		this.classe = classe;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }
