@@ -35,10 +35,6 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="creation_date" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-
 			<column name="email" type="LONGTEXT">
 				<constraints nullable="false" />
 			</column>
@@ -47,7 +43,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="family_name" type="LONGTEXT">
+			<column name="last_name" type="LONGTEXT">
 				<constraints nullable="false" />
 			</column>
 
@@ -67,11 +63,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="sex" type="LONGTEXT">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="year_of_registration" type="DATETIME">
+			<column name="date_of_registration" type="DATETIME">
 				<constraints nullable="false" />
 			</column>
 		</createTable>

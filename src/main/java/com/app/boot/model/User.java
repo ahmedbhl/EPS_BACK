@@ -30,19 +30,23 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	private String email;
 
 	private String password;
 
+	private String firstName;
+
+	private String lastName;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date yearOfRegistration;
+	private Date dateOfRegistration;
 
 	private String phoneNumber;
 
@@ -50,23 +54,22 @@ public class User implements Serializable {
 
 	private String address;
 
-	private boolean status;
+	private boolean enabled;
 
 	public User() {
 	}
 
-	public User(Long id, String email, String password, Set<Role> roles, Date yearOfRegistration, String phoneNumber,
-			String profilePicture, String address, boolean status) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.password = password;
-		this.roles = roles;
-		this.yearOfRegistration = yearOfRegistration;
-		this.phoneNumber = phoneNumber;
-		this.profilePicture = profilePicture;
-		this.address = address;
-		this.status = status;
+	public User(User user) {
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
+		this.roles = user.getRoles();
+		this.enabled = user.isEnabled();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.phoneNumber = user.getPhoneNumber();
+		this.profilePicture = user.getProfilePicture();
+		this.address = user.getAddress();
 	}
 
 	public Long getId() {
@@ -93,6 +96,22 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -101,12 +120,12 @@ public class User implements Serializable {
 		this.roles = roles;
 	}
 
-	public Date getYearOfRegistration() {
-		return yearOfRegistration;
+	public Date getDateOfRegistration() {
+		return dateOfRegistration;
 	}
 
-	public void setYearOfRegistration(Date yearOfRegistration) {
-		this.yearOfRegistration = yearOfRegistration;
+	public void setDateOfRegistration(Date dateOfRegistration) {
+		this.dateOfRegistration = dateOfRegistration;
 	}
 
 	public String getPhoneNumber() {
@@ -133,12 +152,12 @@ public class User implements Serializable {
 		this.address = address;
 	}
 
-	public boolean isStatus() {
-		return status;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setStatus(boolean status) {
-		this.status = status;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public static long getSerialversionuid() {

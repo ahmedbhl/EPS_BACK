@@ -1,50 +1,32 @@
 package com.app.boot.model;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Professor extends User {
+public class Professor extends User implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String firstName;
-
-	private String familyName;
-
 	private String gender;
 
-	public Professor() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	@ManyToMany(mappedBy = "professors")
+	private Set<Establishment> establishments;
 
-	public Professor(Long id, String email, String password, Set<Role> roles, Date yearOfRegistration,
-			String phoneNumber, String profilePicture, String address, boolean status) {
-		super(id, email, password, roles, yearOfRegistration, phoneNumber, profilePicture, address, status);
-		// TODO Auto-generated constructor stub
-	}
+	@ManyToMany(mappedBy = "professors")
+	private Set<Class> classes;
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getFamilyName() {
-		return familyName;
-	}
-
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
+	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
+	private List<Post> posts;
 
 	public String getGender() {
 		return gender;
@@ -53,7 +35,33 @@ public class Professor extends User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	
-	
+
+	public Set<Establishment> getEstablishments() {
+		return establishments;
+	}
+
+	public void setEstablishments(Set<Establishment> establishments) {
+		this.establishments = establishments;
+	}
+
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+
+	public Set<Class> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(Set<Class> classes) {
+		this.classes = classes;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 }

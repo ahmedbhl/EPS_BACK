@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.app.boot.model;
 
 import java.io.Serializable;
@@ -12,12 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-/**
- * @author Hp
- *
- */
 @Entity
-public class Post implements Serializable {
+public class Course implements Serializable {
+
 	/**
 	 * 
 	 */
@@ -27,30 +21,19 @@ public class Post implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String type;
+	private String courseName;
 
 	private String description;
-
-	@ManyToOne
-	@JoinColumn(name = "idGroup")
-	private Groupe group;
-
-	@ManyToOne
-	@JoinColumn(name = "idUser")
-	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "idClass")
 	private Class classe;
 
-	public Post(long id, String type, String description) {
+	public Course() {
 		super();
-		this.id = id;
-		this.type = type;
-		this.description = description;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -58,12 +41,12 @@ public class Post implements Serializable {
 		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getCourseName() {
+		return courseName;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
 	}
 
 	public String getDescription() {
@@ -72,22 +55,6 @@ public class Post implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Groupe getGroup() {
-		return group;
-	}
-
-	public void setGroup(Groupe group) {
-		this.group = group;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public Class getClasse() {

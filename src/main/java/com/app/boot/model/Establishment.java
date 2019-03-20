@@ -2,7 +2,6 @@ package com.app.boot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -39,17 +39,28 @@ public class Establishment implements Serializable {
 	private String photos;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Administration administratin;
+	private Administration administration;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "establishment_professors", joinColumns = {
-			@JoinColumn(name = "establishment_id") }, inverseJoinColumns = { @JoinColumn(name = "professors_id") })
-	private Set<Professor> professors = new HashSet<>();
+			@JoinColumn(name = "establishment_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "professors_id", referencedColumnName = "id") })
+	private Set<Professor> professors;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "establishment_students", joinColumns = {
-			@JoinColumn(name = "establishment_id") }, inverseJoinColumns = { @JoinColumn(name = "students_id") })
-	private Set<Professor> students = new HashSet<>();
+			@JoinColumn(name = "establishment_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "students_id", referencedColumnName = "id") })
+	private Set<Student> students;
+
+	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
+	private Set<Class> classes;
+
+	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
+	private Set<Field> fields;
+
+	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
+	private Set<Level> levels;
 
 	public Long getId() {
 		return id;
@@ -99,12 +110,12 @@ public class Establishment implements Serializable {
 		this.photos = photos;
 	}
 
-	public Administration getAdministratin() {
-		return administratin;
+	public Administration getAdministration() {
+		return administration;
 	}
 
-	public void setAdministratin(Administration administratin) {
-		this.administratin = administratin;
+	public void setAdministration(Administration administration) {
+		this.administration = administration;
 	}
 
 	public Set<Professor> getProfessors() {
@@ -115,12 +126,40 @@ public class Establishment implements Serializable {
 		this.professors = professors;
 	}
 
-	public Set<Professor> getStudents() {
+	public Set<Student> getStudents() {
 		return students;
 	}
 
-	public void setStudents(Set<Professor> students) {
+	public void setStudents(Set<Student> students) {
 		this.students = students;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Set<Class> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(Set<Class> classes) {
+		this.classes = classes;
+	}
+
+	public Set<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(Set<Field> fields) {
+		this.fields = fields;
+	}
+
+	public Set<Level> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(Set<Level> levels) {
+		this.levels = levels;
 	}
 
 }

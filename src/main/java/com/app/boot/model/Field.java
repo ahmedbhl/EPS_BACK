@@ -1,31 +1,45 @@
 package com.app.boot.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Field {
+public class Field implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long fieldId;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
 	private String fieldName;
+
 	private String description;
 
-	public Field(long fieldId, String fieldName, String description) {
+	@ManyToOne
+	@JoinColumn(name = "idEstablishment")
+	private Establishment establishment;
+
+	public Field(Long id, String fieldName, String description) {
 		super();
-		this.fieldId = fieldId;
+		this.id = id;
 		this.fieldName = fieldName;
 		this.description = description;
 	}
 
-	public long getFieldId() {
-		return fieldId;
+	public long getId() {
+		return id;
 	}
 
-	public void setFieldId(long fieldId) {
-		this.fieldId = fieldId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getFieldName() {
@@ -42,6 +56,18 @@ public class Field {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Establishment getEstablishment() {
+		return establishment;
+	}
+
+	public void setEstablishment(Establishment establishment) {
+		this.establishment = establishment;
 	}
 
 }

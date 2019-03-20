@@ -75,7 +75,7 @@ public class UserDTO {
 	 * Creation Date
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
-	private Date creationDate;
+	private Date dateOfRegistration;
 
 	public Long getId() {
 		return id;
@@ -157,12 +157,12 @@ public class UserDTO {
 		this.address = address;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getDateOfRegistration() {
+		return dateOfRegistration;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setDateOfRegistration(Date dateOfRegistration) {
+		this.dateOfRegistration = dateOfRegistration;
 	}
 
 }

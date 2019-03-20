@@ -3,33 +3,51 @@
  */
 package com.app.boot.model;
 
-import javax.persistence.*;
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * @author Hp
  *
  */
 @Entity
-public class Level {
+public class Level implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long levelId;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
 	private String levelName;
+
 	private String description;
 
-	public Level(long levelId, String levelName, String description) {
+	@ManyToOne
+	@JoinColumn(name = "idEstablishment")
+	private Establishment establishment;
+
+	public Level(long id, String levelName, String description) {
 		super();
-		this.levelId = levelId;
+		this.id = id;
 		this.levelName = levelName;
 		this.description = description;
 	}
 
-	public long getLevelId() {
-		return levelId;
+	public long getId() {
+		return id;
 	}
 
-	public void setLevelId(long levelId) {
-		this.levelId = levelId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getLevelName() {
@@ -46,6 +64,14 @@ public class Level {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Establishment getEstablishment() {
+		return establishment;
+	}
+
+	public void setEstablishment(Establishment establishment) {
+		this.establishment = establishment;
 	}
 
 }
