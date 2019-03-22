@@ -14,9 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
-public class Groupe implements Serializable {
+@Table(name = "Groupe")
+
+public class Group implements Serializable {
 	/**
 	 * 
 	 */
@@ -47,7 +50,7 @@ public class Groupe implements Serializable {
 					@JoinColumn(name = "students_id", referencedColumnName = "id") })
 	private Set<Student> students;
 
-	public Groupe() {
+	public Group() {
 		super();
 	}
 
