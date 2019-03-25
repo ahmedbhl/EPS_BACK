@@ -28,6 +28,9 @@ public class Professor extends User implements Serializable {
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	private List<Post> posts;
 
+	@ManyToMany(mappedBy = "professors")
+	private Set<Course> courses;
+
 	public String getGender() {
 		return gender;
 	}
@@ -62,6 +65,14 @@ public class Professor extends User implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Set<Course> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(Set<Course> courses) {
+		this.courses = courses;
 	}
 
 }

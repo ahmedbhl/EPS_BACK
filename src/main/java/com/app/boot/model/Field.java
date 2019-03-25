@@ -1,13 +1,16 @@
 package com.app.boot.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Field implements Serializable {
@@ -26,6 +29,13 @@ public class Field implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "idEstablishment")
 	private Establishment establishment;
+
+	@ManyToOne
+	@JoinColumn(name = "idLevel")
+	private Level level;
+
+	@OneToMany(mappedBy = "field", cascade = { CascadeType.ALL })
+	private Set<Class> classes;
 
 	public Field(Long id, String fieldName, String description) {
 		super();
@@ -68,6 +78,22 @@ public class Field implements Serializable {
 
 	public void setEstablishment(Establishment establishment) {
 		this.establishment = establishment;
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(Level level) {
+		this.level = level;
+	}
+
+	public Set<Class> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(Set<Class> classes) {
+		this.classes = classes;
 	}
 
 }

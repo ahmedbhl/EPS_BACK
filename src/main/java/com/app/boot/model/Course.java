@@ -1,12 +1,17 @@
 package com.app.boot.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -28,6 +33,12 @@ public class Course implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "idClass")
 	private Class classe;
+
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "course_professors", joinColumns = {
+			@JoinColumn(name = "course_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "professors_id", referencedColumnName = "id") })
+	private Set<Professor> professors;
 
 	public Course() {
 		super();
@@ -63,6 +74,18 @@ public class Course implements Serializable {
 
 	public void setClasse(Class classe) {
 		this.classe = classe;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Set<Professor> getProfessors() {
+		return professors;
+	}
+
+	public void setProfessors(Set<Professor> professors) {
+		this.professors = professors;
 	}
 
 }

@@ -55,6 +55,10 @@ public class Class implements Serializable {
 	@OneToMany(mappedBy = "classe", cascade = { CascadeType.ALL })
 	private Set<Course> courses;
 
+	@ManyToOne
+	@JoinColumn(name = "idField")
+	private Field field;
+
 	public Class(long id, String className, String description, String invitationCode) {
 		super();
 		this.id = id;
@@ -137,6 +141,14 @@ public class Class implements Serializable {
 
 	public void setCourses(Set<Course> courses) {
 		this.courses = courses;
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public void setField(Field field) {
+		this.field = field;
 	}
 
 }

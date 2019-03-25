@@ -39,7 +39,7 @@ public class UserDTO {
 	 * User Family Name
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.familyName}")
-	private String familyName;
+	private String lastName;
 
 	/*
 	 * Year Of the Registration
@@ -109,12 +109,12 @@ public class UserDTO {
 		this.firstName = firstName;
 	}
 
-	public String getFamilyName() {
-		return familyName;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public Date getYearOfRegistration() {
