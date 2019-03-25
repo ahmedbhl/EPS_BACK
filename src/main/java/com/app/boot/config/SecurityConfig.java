@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/api/v1/users/**")
 				.hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR).anyRequest().fullyAuthenticated().and()
 				.formLogin().permitAll();
-				// .httpBasic();
+		// .httpBasic();
 
 	}
 
