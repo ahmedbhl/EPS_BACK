@@ -18,5 +18,8 @@ public interface IServiceEstablishment {
 	public Establishment Update(Establishment establishment);
 
 	public void Delete(Establishment establishment);
+	
+	
+	public Establishment DeleteById(Long id);
 
 }

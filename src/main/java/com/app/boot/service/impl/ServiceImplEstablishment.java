@@ -38,4 +38,10 @@ public class ServiceImplEstablishment implements IServiceEstablishment {
 
 	}
 
+	@Override
+	public Establishment DeleteById(Long id) {
+		establishmentRepository.deleteById(id);
+		return null;
+	}
+
 }
