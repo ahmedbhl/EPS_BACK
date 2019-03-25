@@ -31,7 +31,7 @@ public class ServiceUser implements IServiceUser, UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> optionalUser = userRepository.getUserByEmail(email);
-		optionalUser.orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+		optionalUser.orElseThrow(() -> null);
 		return optionalUser.map(CustomUserDetails::new).get();
 	}
 
@@ -93,6 +93,18 @@ public class ServiceUser implements IServiceUser, UserDetailsService {
 						id.toString()));
 		userRepository.delete(deletedUser);
 		return deletedUser;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.app.boot.IServiceUser#getUserByEmail
+	 */
+	@Override
+	public User getUserByEmail(String email) {
+		Optional<User> optionalUser = userRepository.getUserByEmail(email);
+		optionalUser.orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
+		return optionalUser.map(CustomUserDetails::new).get();
 	}
 
 }

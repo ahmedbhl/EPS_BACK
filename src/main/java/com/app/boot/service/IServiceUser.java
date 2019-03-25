@@ -15,6 +15,14 @@ public interface IServiceUser {
 	List<User> getAllUsers();
 
 	/**
+	 * Get the user By Email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	User getUserByEmail(String email);
+
+	/**
 	 * Get the user ID
 	 * 
 	 * @param id
