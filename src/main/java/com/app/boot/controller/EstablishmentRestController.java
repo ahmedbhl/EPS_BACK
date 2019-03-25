@@ -69,7 +69,7 @@ public class EstablishmentRestController {
 	/**
 	 * Logger
 	 **/
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EstablishmentRestController.class);
 
 	@ResponseBody
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -92,7 +92,7 @@ public class EstablishmentRestController {
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.createEstablishment.value}", notes = "${swagger.establishment-rest-controller.createEstablishment.notes}")
 	public ResponseEntity<EstablishmentDTO> createEstablishment(
-			@ApiParam(value = "${swagger.establishment-rest-controller.createEstablishment.user}", required = true) @Valid @RequestBody EstablishmentDTO establishmentDTO) {
+			@ApiParam(value = "${swagger.establishment-rest-controller.createEstablishment.establishment}", required = true) @Valid @RequestBody EstablishmentDTO establishmentDTO) {
 		// Map to model
 		Establishment establishment = modelMapper.map(establishmentDTO, Establishment.class);
 		final EstablishmentDTO newEstablishmentDTO;
