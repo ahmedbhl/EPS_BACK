@@ -1,6 +1,7 @@
 package com.app.boot.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,9 +40,14 @@ public class ServiceImplEstablishment implements IServiceEstablishment {
 	}
 
 	@Override
-	public Establishment DeleteById(Long id) {
+	public void DeleteById(Long id) {
 		establishmentRepository.deleteById(id);
-		return null;
+
+	}
+
+	@Override
+	public Optional<Establishment> getEstablishmentById(Long id) {
+		return establishmentRepository.findById(id);
 	}
 
 }

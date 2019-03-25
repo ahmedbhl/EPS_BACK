@@ -1,6 +1,7 @@
 package com.app.boot.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,9 @@ public interface IServiceEstablishment {
 	public Establishment Update(Establishment establishment);
 
 	public void Delete(Establishment establishment);
-	
-	
-	public Establishment DeleteById(Long id);
+
+	public void DeleteById(Long id);
+
+	public Optional<Establishment> getEstablishmentById(Long id);
 
 }

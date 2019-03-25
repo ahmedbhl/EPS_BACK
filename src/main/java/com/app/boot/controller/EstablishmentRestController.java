@@ -77,7 +77,8 @@ public class EstablishmentRestController {
 	@ApiOperation(value = "${swagger.establishment-rest-controller.getAllEstablishments.value}", notes = "${swagger.establishment-rest-controller.getAllEstablishments.notes}")
 	public ResponseEntity<List<EstablishmentDTO>> getAllEstablishments() {
 		List<Establishment> establishments = serviceEstablishment.getAll();
-		List<EstablishmentDTO> establishmentsDTO = establishments.stream().map(establishment -> modelMapper.map(establishment, EstablishmentDTO.class))
+		List<EstablishmentDTO> establishmentsDTO = establishments.stream()
+				.map(establishment -> modelMapper.map(establishment, EstablishmentDTO.class))
 				.collect(Collectors.toList());
 		return ResponseEntity.ok(establishmentsDTO);
 	}
@@ -101,7 +102,7 @@ public class EstablishmentRestController {
 			Establishment createdEstablishment = serviceEstablishment.Create(establishment);
 			// Map to DTO
 			newEstablishmentDTO = modelMapper.map(createdEstablishment, EstablishmentDTO.class);
-			logPairingInfo(createdEstablishment, ADDING_MESSAGE);
+			logEstablishmentInfo(createdEstablishment, ADDING_MESSAGE);
 		} catch (CodeOperationException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
@@ -131,7 +132,7 @@ public class EstablishmentRestController {
 			Establishment updatedEstablishment = serviceEstablishment.Update(establishment);
 			// Map to dto
 			updateEstablishment = modelMapper.map(updatedEstablishment, EstablishmentDTO.class);
-			logPairingInfo(updatedEstablishment, UPDATE_MESSAGE);
+			logEstablishmentInfo(updatedEstablishment, UPDATE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -150,13 +151,14 @@ public class EstablishmentRestController {
 	@ApiOperation(value = "${swagger.establishment-rest-controller.delete.value}", notes = "${swagger.establishment-rest-controller.delete.notes}")
 	public ResponseEntity<Establishment> deletePairing(
 			@ApiParam(value = "${swagger.establishment-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
-		final Establishment establishment;
+
+		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
 		try {
-			establishment = serviceEstablishment.DeleteById(id);;
 			if (establishment == null) {
 				return ResponseEntity.notFound().build();
 			}
-			logPairingInfo(establishment, DELETE_MESSAGE);
+			serviceEstablishment.DeleteById(id);
+			logEstablishmentInfo(establishment, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -169,16 +171,13 @@ public class EstablishmentRestController {
 	 * @param pairingModel
 	 * @param message
 	 */
-	private void logPairingInfo(final Establishment establishment, final String message) {
+	private void logEstablishmentInfo(final Establishment establishment, final String message) {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info(
-					Markers.append("app_establishment_id", establishment.getId()).and(Markers.append("app_establishment_establishmentName", establishment.getEstablishmentName()))
-							.and(Markers.append("app_establishment_yearOfFoundation", establishment.getYearOfFoundation()))
-							.and(Markers.append("app_establishment_location", establishment.getLocation())),
-					message);
+			LOGGER.info(Markers.append("app_establishment_id", establishment.getId())
+					.and(Markers.append("app_establishment_establishmentName", establishment.getEstablishmentName()))
+					.and(Markers.append("app_establishment_yearOfFoundation", establishment.getYearOfFoundation()))
+					.and(Markers.append("app_establishment_location", establishment.getLocation())), message);
 		}
 	}
 
-	
-	
 }
