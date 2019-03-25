@@ -37,10 +37,12 @@ public class SwaggerConfig {
 	@Bean
 	public Docket productApi() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("private-api").apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("com.app.boot.controller")).paths(regex("/api/v1/users.*"))
+				.apis(RequestHandlerSelectors.basePackage("com.app.boot.controller")).paths(regex("/api/v1/users.*")).paths(regex("/api/v1/establishments.*"))
 				.build();
 
 	}
+	
+
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("EPS Cedro Rest API")
