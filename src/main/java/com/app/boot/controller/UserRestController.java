@@ -58,7 +58,7 @@ public class UserRestController {
 	 * Adding pairing message
 	 */
 
-	private static final String ADDING_MESSAGE = "Adding new Usere";
+	private static final String ADDING_MESSAGE = "Adding new User";
 
 	/**
 	 * Delete pairing message
@@ -135,7 +135,7 @@ public class UserRestController {
 		User user = modelMapper.map(userDTO, User.class);
 		final UserDTO updateUser;
 		try {
-			user.setCreationDate(new Date());
+			user.setDateOfRegistration(new Date());
 			// Update the user
 			User updUser = userService.updateUser(user);
 			// Map to dto
@@ -182,9 +182,9 @@ public class UserRestController {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info(
 					Markers.append("app_user_id", user.getId()).and(Markers.append("app_user_email", user.getEmail()))
-							.and(Markers.append("app_user_familyName", user.getFamilyName()))
+							.and(Markers.append("app_user_familyName", user.getLastName()))
 							.and(Markers.append("app_user_firstName", user.getFirstName()))
-							.and(Markers.append("app_user_creationDate", user.getCreationDate())),
+							.and(Markers.append("app_user_creationDate", user.getDateOfRegistration())),
 					message);
 		}
 	}

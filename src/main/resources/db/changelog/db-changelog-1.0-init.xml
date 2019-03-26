@@ -1,5 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
@@ -34,10 +35,6 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="creation_date" type="DATETIME">
-				<constraints nullable="false" />
-			</column>
-
 			<column name="email" type="LONGTEXT">
 				<constraints nullable="false" />
 			</column>
@@ -46,7 +43,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="family_name" type="LONGTEXT">
+			<column name="last_name" type="LONGTEXT">
 				<constraints nullable="false" />
 			</column>
 
@@ -66,11 +63,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="sex" type="LONGTEXT">
-				<constraints nullable="false" />
-			</column>
-
-			<column name="year_of_registration" type="DATETIME">
+			<column name="date_of_registration" type="DATETIME">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -85,30 +78,21 @@
 		</preConditions>
 		<createTable tableName="users_role">
 			<column name="user_id" type="BIGINT">
-				<constraints nullable="false" foreignKeyName="fk_user"  references="user(id)"/>
+				<constraints nullable="false" foreignKeyName="fk_user"
+					references="user(id)" />
 			</column>
 			<column name="role_id" type="BIGINT">
-				<constraints nullable="false" foreignKeyName="fk_role"  references="role(id)" />
+				<constraints nullable="false" foreignKeyName="fk_role"
+					references="role(id)" />
 			</column>
 		</createTable>
 	</changeSet>
 
-	<!-- <changeSet author="XIFZ698" id="addForeignKeyOnRelationTypeIdOnParameter">
-		<addForeignKeyConstraint 
-		baseColumnNames="role_id"
-			baseTableName="user" 
-			constraintName="FKh2321brloejrqnbi08vmsaaoe"
-			deferrable="false" 
-			initiallyDeferred="false"
-			 onDelete="CASCADE"
-			onUpdate="NO ACTION" 
-			referencedColumnNames="id" 
-			referencedTableName="role" />
-	</changeSet>-->
-	
+
 	<changeSet author="zayneb" id="insertRole">
-		<sqlFile path="../sql/insertRole.sql" relativeToChangelogFile="true"
-			splitStatements="true" stripComments="true" />
+		<sqlFile path="../sql/insertRole.sql"
+			relativeToChangelogFile="true" splitStatements="true"
+			stripComments="true" />
 	</changeSet>
 
 </databaseChangeLog>

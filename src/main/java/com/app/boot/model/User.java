@@ -30,36 +30,31 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	private String email;
 
 	private String password;
 
+	private String firstName;
+
+	private String lastName;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
-	private boolean enabled;
-
-	private String firstName;
-
-	private String familyName;
-
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date yearOfRegistration;
+	private Date dateOfRegistration;
 
 	private String phoneNumber;
 
-	private String profilPicture;
-
-	private String sex;
+	private String profilePicture;
 
 	private String address;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date creationDate;
+	private boolean enabled;
 
 	public User() {
 	}
@@ -71,13 +66,10 @@ public class User implements Serializable {
 		this.roles = user.getRoles();
 		this.enabled = user.isEnabled();
 		this.firstName = user.getFirstName();
-		this.familyName = user.getFamilyName();
-		this.yearOfRegistration = user.getYearOfRegistration();
+		this.lastName = user.getLastName();
 		this.phoneNumber = user.getPhoneNumber();
-		this.profilPicture = user.getProfilPicture();
-		this.sex = user.getSex();
+		this.profilePicture = user.getProfilePicture();
 		this.address = user.getAddress();
-		this.creationDate = user.getCreationDate();
 	}
 
 	public Long getId() {
@@ -104,22 +96,6 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public String getFirstName() {
 		return firstName;
 	}
@@ -128,20 +104,28 @@ public class User implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public String getFamilyName() {
-		return familyName;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public Date getYearOfRegistration() {
-		return yearOfRegistration;
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
-	public void setYearOfRegistration(Date yearOfRegistration) {
-		this.yearOfRegistration = yearOfRegistration;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Date getDateOfRegistration() {
+		return dateOfRegistration;
+	}
+
+	public void setDateOfRegistration(Date dateOfRegistration) {
+		this.dateOfRegistration = dateOfRegistration;
 	}
 
 	public String getPhoneNumber() {
@@ -152,20 +136,12 @@ public class User implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getProfilPicture() {
-		return profilPicture;
+	public String getProfilePicture() {
+		return profilePicture;
 	}
 
-	public void setProfilPicture(String profilPicture) {
-		this.profilPicture = profilPicture;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 	}
 
 	public String getAddress() {
@@ -176,12 +152,16 @@ public class User implements Serializable {
 		this.address = address;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }
