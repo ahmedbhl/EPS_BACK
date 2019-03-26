@@ -110,7 +110,7 @@ public class UserRestController {
 			User createdUser = userService.createUser(user);
 			// Map to DTO
 			newUserDTO = modelMapper.map(createdUser, UserDTO.class);
-			logPairingInfo(createdUser, ADDING_MESSAGE);
+			logUserInfo(createdUser, ADDING_MESSAGE);
 		} catch (CodeOperationException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
@@ -140,7 +140,7 @@ public class UserRestController {
 			User updUser = userService.updateUser(user);
 			// Map to dto
 			updateUser = modelMapper.map(updUser, UserDTO.class);
-			logPairingInfo(updUser, UPDATE_MESSAGE);
+			logUserInfo(updUser, UPDATE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -165,7 +165,7 @@ public class UserRestController {
 			if (user == null) {
 				return ResponseEntity.notFound().build();
 			}
-			logPairingInfo(user, DELETE_MESSAGE);
+			logUserInfo(user, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -178,7 +178,7 @@ public class UserRestController {
 	 * @param pairingModel
 	 * @param message
 	 */
-	private void logPairingInfo(final User user, final String message) {
+	private void logUserInfo(final User user, final String message) {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info(
 					Markers.append("app_user_id", user.getId()).and(Markers.append("app_user_email", user.getEmail()))

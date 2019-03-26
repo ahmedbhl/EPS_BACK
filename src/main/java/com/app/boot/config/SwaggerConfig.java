@@ -1,14 +1,15 @@
 package com.app.boot.config;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
+import com.google.common.base.Predicate;
+
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -37,9 +38,17 @@ public class SwaggerConfig {
 	@Bean
 	public Docket productApi() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("private-api").apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("com.app.boot.controller")).paths(regex("/api/v1/users.*"))
-				.build();
+				.apis(RequestHandlerSelectors.basePackage("com.app.boot.controller")).paths(postPaths()).build();
 
+	}
+
+	/**
+	 * Define the ai paths
+	 * 
+	 * @return
+	 */
+	private Predicate<String> postPaths() {
+		return PathSelectors.regex("/api/v1/users.*|/api/v1/establishments.*");
 	}
 
 	private ApiInfo apiInfo() {

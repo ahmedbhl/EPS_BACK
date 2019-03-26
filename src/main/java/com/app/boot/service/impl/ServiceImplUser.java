@@ -20,7 +20,7 @@ import com.app.boot.service.IServiceUser;
 
 @Service
 @Transactional
-public class ServiceUser implements IServiceUser, UserDetailsService {
+public class ServiceImplUser implements IServiceUser, UserDetailsService {
 
 	@Autowired
 	private UserReposiroty userRepository;

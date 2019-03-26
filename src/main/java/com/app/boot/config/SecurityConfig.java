@@ -51,10 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// @formatter:off
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/api/v1/users/**")
-				.hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR).anyRequest().fullyAuthenticated().and()
-				.formLogin().permitAll();
-				// .httpBasic();
+		http.authorizeRequests()
+				// @formatter:off
+				.antMatchers("/api/v1/users/**").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/establishments.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.anyRequest().fullyAuthenticated().and().formLogin().permitAll();
+		// .httpBasic();
 
 	}
 

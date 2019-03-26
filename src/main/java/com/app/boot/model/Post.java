@@ -33,7 +33,7 @@ public class Post implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "idGroup")
-	private Groupe group;
+	private Group group;
 
 	@ManyToOne
 	@JoinColumn(name = "idUser")
@@ -74,13 +74,14 @@ public class Post implements Serializable {
 		this.description = description;
 	}
 
-	public Groupe getGroup() {
+	public Group getGroup() {
 		return group;
 	}
 
-	public void setGroup(Groupe group) {
+	public void setGroup(Group group) {
 		this.group = group;
 	}
+
 
 	public User getUser() {
 		return user;
@@ -98,4 +99,7 @@ public class Post implements Serializable {
 		this.classe = classe;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }
