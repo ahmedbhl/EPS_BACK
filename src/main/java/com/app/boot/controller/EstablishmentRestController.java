@@ -139,6 +139,28 @@ public class EstablishmentRestController {
 		return ResponseEntity.status(HttpStatus.OK).body(updateEstablishment);
 	}
 
+	@ResponseBody
+	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.establishment-rest-controller.delete.value}", notes = "${swagger.establishment-rest-controller.delete.notes}")
+	public ResponseEntity<Establishment> delete(
+			@ApiParam(value = "${swagger.establishment-rest-controller.delete}", required = true) @PathVariable("id") Long id) {
+
+		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
+		try {
+			if (establishment == null) {
+				return ResponseEntity.notFound().build();
+			}
+			serviceEstablishment.Delete(establishment);
+			;
+			logEstablishmentInfo(establishment, DELETE_MESSAGE);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(establishment);
+	}
+
 	/**
 	 * Delete the Establishment having the passed id.
 	 * 
@@ -149,7 +171,7 @@ public class EstablishmentRestController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.delete.value}", notes = "${swagger.establishment-rest-controller.delete.notes}")
-	public ResponseEntity<Establishment> deletePairing(
+	public ResponseEntity<Establishment> deleteById(
 			@ApiParam(value = "${swagger.establishment-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
 
 		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
@@ -159,6 +181,29 @@ public class EstablishmentRestController {
 			}
 			serviceEstablishment.DeleteById(id);
 			logEstablishmentInfo(establishment, DELETE_MESSAGE);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(establishment);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.establishment-rest-controller.getById.value}", notes = "${swagger.establishment-rest-controller.getById.notes}")
+	public ResponseEntity<Establishment> getEstablishmentById(
+			@ApiParam(value = "${swagger.establishment-rest-controller.getById.id}", required = true) @PathVariable("id") Long id) {
+		final EstablishmentDTO newEstablishmentDTO;
+
+		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
+		try {
+			if (establishment == null) {
+				return ResponseEntity.notFound().build();
+			}
+			newEstablishmentDTO = modelMapper.map(establishment, EstablishmentDTO.class);
+
+			ResponseEntity.ok(newEstablishmentDTO);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}

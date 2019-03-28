@@ -3,10 +3,15 @@ package com.app.boot.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.app.boot.model.Level;
 import com.app.boot.repository.LevelRepository;
 import com.app.boot.service.IServiceLevel;
 
+@Service
+@Transactional
 public class ServiceImplLevel implements IServiceLevel {
 
 	private LevelRepository levelRepository;
@@ -42,9 +47,10 @@ public class ServiceImplLevel implements IServiceLevel {
 	}
 
 	@Override
-	public Optional<Level> getLevelByName(String levelName) {
+	public List<Level> getLevelBylevelName(String levelName) {
 
-		return levelRepository.findOne(levelName);
+		return levelRepository.getLevelBylevelName(levelName);
+
 	}
 
 }
