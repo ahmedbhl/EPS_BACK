@@ -48,7 +48,7 @@ public class SwaggerConfig {
 	 * @return
 	 */
 	private Predicate<String> postPaths() {
-		return PathSelectors.regex("/api/v1/users.*|/api/v1/establishments.*");
+		return PathSelectors.regex("/api/v1/users.*|/api/v1/establishments.*|/api/v1/levels.*");
 	}
 
 	private ApiInfo apiInfo() {
