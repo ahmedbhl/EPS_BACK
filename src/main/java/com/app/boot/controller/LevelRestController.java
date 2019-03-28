@@ -150,9 +150,9 @@ public class LevelRestController {
 	@ResponseBody
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
-	@ApiOperation(value = "${swagger.level-rest-controller.delete.value}", notes = "${swagger.level-rest-controller.delete.notes}")
+	@ApiOperation(value = "${swagger.level-rest-controller.deleteById.value}", notes = "${swagger.level-rest-controller.deleteById.notes}")
 	public ResponseEntity<Level> deleteById(
-			@ApiParam(value = "${swagger.level-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
+			@ApiParam(value = "${swagger.level-rest-controller.deleteById.id}", required = true) @PathVariable("id") Long id) {
 
 		final Level level = serviceLevel.getLevelById(id).get();
 		try {
