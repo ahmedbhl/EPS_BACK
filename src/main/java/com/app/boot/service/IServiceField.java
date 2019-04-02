@@ -19,5 +19,5 @@ public interface IServiceField {
 
 	public Optional<Field> getFieldById(Long id);
 
-	public List<Field> getFieldByFieldName(String fieldName);
+	public List<Field> getFieldByfieldName(String fieldName);
 }

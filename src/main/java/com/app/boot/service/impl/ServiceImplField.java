@@ -46,8 +46,10 @@ public class ServiceImplField implements IServiceField {
 		return fieldRepository.findById(id);
 	}
 
+
+
 	@Override
-	public List<Field> getFieldByFieldName(String fieldName) {
+	public List<Field> getFieldByfieldName(String fieldName) {
 		return fieldRepository.getFieldByfieldName(fieldName);
 	}
 
