@@ -1,6 +1,7 @@
 package com.app.boot.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -53,22 +54,22 @@ public class LevelRestController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private static final String ADDING_MESSAGE = " Establishment Adding ";
+	private static final String ADDING_MESSAGE = " Level Adding ";
 
 	/**
 	 * Delete pairing message
 	 */
-	private static final String DELETE_MESSAGE = "Delete Establishment";
+	private static final String DELETE_MESSAGE = "Delete Level";
 
 	/**
 	 * Update pairing message
 	 */
-	private static final String UPDATE_MESSAGE = "Update Establishment";
+	private static final String UPDATE_MESSAGE = "Update Level";
 
 	/**
 	 * Logger
 	 **/
-	private static final Logger LOGGER = LoggerFactory.getLogger(EstablishmentRestController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LevelRestController.class);
 
 	@ResponseBody
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -91,11 +92,11 @@ public class LevelRestController {
 		Level level = modelMapper.map(levelDTO, Level.class);
 		final LevelDTO newlevelDTO;
 		try {
-			// Save the new Establishment
-			Level createdLevel = serviceLevel.Create(level);
+			// Save the new Level
+			Level createdLevel = serviceLevel.create(level);
 			// Map to DTO
 			newlevelDTO = modelMapper.map(createdLevel, LevelDTO.class);
-			logEstablishmentInfo(createdLevel, ADDING_MESSAGE);
+			logLevelInfo(createdLevel, ADDING_MESSAGE);
 		} catch (CodeOperationException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
@@ -115,10 +116,10 @@ public class LevelRestController {
 		try {
 
 			// Update the level
-			Level updatedLevel = serviceLevel.Update(level);
+			Level updatedLevel = serviceLevel.update(level);
 			// Map to dto
 			updateLevel = modelMapper.map(updatedLevel, LevelDTO.class);
-			logEstablishmentInfo(updatedLevel, UPDATE_MESSAGE);
+			logLevelInfo(updatedLevel, UPDATE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
@@ -129,93 +130,90 @@ public class LevelRestController {
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.level-rest-controller.delete.value}", notes = "${swagger.level-rest-controller.delete.notes}")
-	public ResponseEntity<Level> delete(
-			@ApiParam(value = "${swagger.level-rest-controller.delete}", required = true) @PathVariable("id") Long id) {
+	public ResponseEntity<LevelDTO> delete(
+			@ApiParam(value = "${swagger.level-rest-controller.delete}", required = true) @RequestBody LevelDTO levelDTO) {
 
-		final Level level = serviceLevel.getLevelById(id).get();
+		final LevelDTO deletedLevelDTO;
 		try {
+			Level level = modelMapper.map(levelDTO, Level.class);
+			level = serviceLevel.delete(level);
 			if (level == null) {
 				return ResponseEntity.notFound().build();
 			}
-			serviceLevel.Delete(level);
-			;
-			logEstablishmentInfo(level, DELETE_MESSAGE);
+			deletedLevelDTO = modelMapper.map(level, LevelDTO.class);
+			logLevelInfo(level, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(level);
+		return ResponseEntity.ok(deletedLevelDTO);
 	}
 
 	@ResponseBody
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.level-rest-controller.deleteById.value}", notes = "${swagger.level-rest-controller.deleteById.notes}")
-	public ResponseEntity<Level> deleteById(
+	public ResponseEntity<LevelDTO> deleteById(
 			@ApiParam(value = "${swagger.level-rest-controller.deleteById.id}", required = true) @PathVariable("id") Long id) {
 
-		final Level level = serviceLevel.getLevelById(id).get();
+		final LevelDTO levelDTO;
 		try {
+			final Level level = serviceLevel.deleteById(id);
 			if (level == null) {
 				return ResponseEntity.notFound().build();
 			}
-			serviceLevel.DeleteById(id);
-			logEstablishmentInfo(level, DELETE_MESSAGE);
+			levelDTO = modelMapper.map(level, LevelDTO.class);
+			logLevelInfo(level, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(level);
+		return ResponseEntity.ok(levelDTO);
 	}
 
 	@ResponseBody
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.level-rest-controller.getById.value}", notes = "${swagger.level-rest-controller.getById.notes}")
-	public ResponseEntity<Level> getLevelById(
+	public ResponseEntity<LevelDTO> getLevelById(
 			@ApiParam(value = "${swagger.level-rest-controller.getById.id}", required = true) @PathVariable("id") Long id) {
 		final LevelDTO newLevelDTO;
 
-		final Level level = serviceLevel.getLevelById(id).get();
+		final Optional<Level> level = serviceLevel.getLevelById(id);
 		try {
-			if (level == null) {
+			if (!level.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
-			newLevelDTO = modelMapper.map(level, LevelDTO.class);
-
-			ResponseEntity.ok(newLevelDTO);
+			newLevelDTO = modelMapper.map(level.get(), LevelDTO.class);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
-
-		return ResponseEntity.ok(level);
+		return ResponseEntity.ok(newLevelDTO);
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{levelName}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/name/{levelName}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.level-rest-controller.getLevelBylevelName.value}", notes = "${swagger.level-rest-controller.getLevelBylevelName.notes}")
-	public ResponseEntity<List<Level>> getLevelBylevelName(
+	public ResponseEntity<List<LevelDTO>> getLevelBylevelName(
 			@ApiParam(value = "${swagger.level-rest-controller.getLevelBylevelName.levelName}", required = true) @PathVariable("levelName") String levelName) {
-		// final LevelDTO newLevelDTO;
-		List<Level> levels = serviceLevel.getLevelBylevelName(levelName);
 
+		List<Level> levels = serviceLevel.getLevelBylevelName(levelName);
+		final List<LevelDTO> levelDTO;
 		try {
 			if (levelName == null) {
 				return ResponseEntity.notFound().build();
 			}
-			List<LevelDTO> levelDTO = levels.stream().map(level -> modelMapper.map(level, LevelDTO.class))
+			levelDTO = levels.stream().map(level -> modelMapper.map(level, LevelDTO.class))
 					.collect(Collectors.toList());
-
-			ResponseEntity.ok(levelDTO);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(levels);
+		return ResponseEntity.ok(levelDTO);
 	}
 
-	private void logEstablishmentInfo(final Level level, final String message) {
+	private void logLevelInfo(final Level level, final String message) {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info(Markers.append("app_level_id", level.getId())
 					.and(Markers.append("app_level_levelName", level.getLevelName())), message);

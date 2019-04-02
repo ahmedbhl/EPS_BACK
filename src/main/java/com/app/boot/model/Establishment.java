@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Establishment implements Serializable {
 
@@ -59,6 +61,7 @@ public class Establishment implements Serializable {
 	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
 	private Set<Field> fields;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
 	private Set<Level> levels;
 

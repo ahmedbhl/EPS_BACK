@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Hp
  *
@@ -38,15 +40,9 @@ public class Level implements Serializable {
 	@JoinColumn(name = "idEstablishment")
 	private Establishment establishment;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "level", cascade = { CascadeType.ALL })
 	private Set<Field> fields;
-
-	public Level(long id, String levelName, String description) {
-		super();
-		this.id = id;
-		this.levelName = levelName;
-		this.description = description;
-	}
 
 	public long getId() {
 		return id;
