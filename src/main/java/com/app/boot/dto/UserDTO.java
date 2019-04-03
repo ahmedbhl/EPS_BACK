@@ -56,8 +56,8 @@ public class UserDTO {
 	/*
 	 * User profil Picture
 	 */
-	@ApiModelProperty(value = "${swagger.user-dto.profilPicture}")
-	private String profilPicture;
+	@ApiModelProperty(value = "${swagger.user-dto.profilePicture}")
+	private String profilePicture;
 
 	/*
 	 * Sex of the user
@@ -133,12 +133,12 @@ public class UserDTO {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getProfilPicture() {
-		return profilPicture;
+	public String getProfilePicture() {
+		return profilePicture;
 	}
 
-	public void setProfilPicture(String profilPicture) {
-		this.profilPicture = profilPicture;
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 	}
 
 	public String getSex() {

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Field implements Serializable {
 	/**
@@ -34,6 +36,7 @@ public class Field implements Serializable {
 	@JoinColumn(name = "idLevel")
 	private Level level;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "field", cascade = { CascadeType.ALL })
 	private Set<Class> classes;
 
