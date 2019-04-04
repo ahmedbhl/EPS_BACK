@@ -3,6 +3,7 @@ package com.app.boot.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.app.boot.service.IServiceField;
 @Transactional
 public class ServiceImplField implements IServiceField {
 
+	@Autowired
 	private FieldRepository fieldRepository;
 
 	@Override
@@ -45,8 +47,6 @@ public class ServiceImplField implements IServiceField {
 	public Optional<Field> getFieldById(Long id) {
 		return fieldRepository.findById(id);
 	}
-
-
 
 	@Override
 	public List<Field> getFieldByfieldName(String fieldName) {

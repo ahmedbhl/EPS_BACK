@@ -14,6 +14,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Course implements Serializable {
 
@@ -39,53 +48,5 @@ public class Course implements Serializable {
 			@JoinColumn(name = "course_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "professors_id", referencedColumnName = "id") })
 	private Set<Professor> professors;
-
-	public Course() {
-		super();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCourseName() {
-		return courseName;
-	}
-
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Class getClasse() {
-		return classe;
-	}
-
-	public void setClasse(Class classe) {
-		this.classe = classe;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public Set<Professor> getProfessors() {
-		return professors;
-	}
-
-	public void setProfessors(Set<Professor> professors) {
-		this.professors = professors;
-	}
 
 }

@@ -16,6 +16,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Class implements Serializable {
 	/**
@@ -58,97 +67,5 @@ public class Class implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "idField")
 	private Field field;
-
-	public Class(long id, String className, String description, String invitationCode) {
-		super();
-		this.id = id;
-		this.className = className;
-		this.description = description;
-		this.invitationCode = invitationCode;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getInvitationCode() {
-		return invitationCode;
-	}
-
-	public void setInvitationCode(String invitationCode) {
-		this.invitationCode = invitationCode;
-	}
-
-	public List<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
-
-	public Set<Professor> getProfessors() {
-		return professors;
-	}
-
-	public void setProfessors(Set<Professor> professors) {
-		this.professors = professors;
-	}
-
-	public Set<Student> getStudents() {
-		return students;
-	}
-
-	public void setStudents(Set<Student> students) {
-		this.students = students;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public Establishment getEstablishment() {
-		return establishment;
-	}
-
-	public void setEstablishment(Establishment establishment) {
-		this.establishment = establishment;
-	}
-
-	public Set<Course> getCourses() {
-		return courses;
-	}
-
-	public void setCourses(Set<Course> courses) {
-		this.courses = courses;
-	}
-
-	public Field getField() {
-		return field;
-	}
-
-	public void setField(Field field) {
-		this.field = field;
-	}
 
 }

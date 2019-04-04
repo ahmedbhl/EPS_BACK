@@ -14,6 +14,15 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Field implements Serializable {
 	/**
@@ -39,64 +48,5 @@ public class Field implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy = "field", cascade = { CascadeType.ALL })
 	private Set<Class> classes;
-
-	public Field(Long id, String fieldName, String description) {
-		super();
-		this.id = id;
-		this.fieldName = fieldName;
-		this.description = description;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public Establishment getEstablishment() {
-		return establishment;
-	}
-
-	public void setEstablishment(Establishment establishment) {
-		this.establishment = establishment;
-	}
-
-	public Level getLevel() {
-		return level;
-	}
-
-	public void setLevel(Level level) {
-		this.level = level;
-	}
-
-	public Set<Class> getClasses() {
-		return classes;
-	}
-
-	public void setClasses(Set<Class> classes) {
-		this.classes = classes;
-	}
 
 }

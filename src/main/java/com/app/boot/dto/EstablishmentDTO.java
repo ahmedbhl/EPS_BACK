@@ -4,7 +4,15 @@ import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(description = "${swagger.establishment-dto}")
 public class EstablishmentDTO {
 
@@ -25,53 +33,4 @@ public class EstablishmentDTO {
 
 	@ApiModelProperty(value = "${swagger.establishment-dto.photos}")
 	private String photos;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getEstablishmentName() {
-		return establishmentName;
-	}
-
-	public void setEstablishmentName(String establishmentName) {
-		this.establishmentName = establishmentName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Date getYearOfFoundation() {
-		return yearOfFoundation;
-	}
-
-	public void setYearOfFoundation(Date yearOfFoundation) {
-		this.yearOfFoundation = yearOfFoundation;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public String getPhotos() {
-		return photos;
-	}
-
-	public void setPhotos(String photos) {
-		this.photos = photos;
-	}
-
 }
