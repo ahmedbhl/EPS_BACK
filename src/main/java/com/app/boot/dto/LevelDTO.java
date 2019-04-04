@@ -7,7 +7,15 @@ import com.app.boot.model.Field;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(description = "${swagger.level-dto}")
 public class LevelDTO {
 
@@ -25,45 +33,5 @@ public class LevelDTO {
 
 	@ApiModelProperty(value = "${swagger.level-dto.fields}")
 	private Set<Field> fields;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getLevelName() {
-		return levelName;
-	}
-
-	public void setLevelName(String levelName) {
-		this.levelName = levelName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Establishment getEstablishment() {
-		return establishment;
-	}
-
-	public void setEstablishment(Establishment establishment) {
-		this.establishment = establishment;
-	}
-
-	public Set<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(Set<Field> fields) {
-		this.fields = fields;
-	}
 
 }

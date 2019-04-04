@@ -16,9 +16,17 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Groupe")
-
 public class Group implements Serializable {
 	/**
 	 * 
@@ -49,65 +57,5 @@ public class Group implements Serializable {
 			@JoinColumn(name = "group_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "students_id", referencedColumnName = "id") })
 	private Set<Student> students;
-
-	public Group() {
-		super();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getGroupName() {
-		return groupName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getHashCode() {
-		return hashCode;
-	}
-
-	public void setHashCode(String hashCode) {
-		this.hashCode = hashCode;
-	}
-
-	public Set<Professor> getProfessors() {
-		return professors;
-	}
-
-	public void setProfessors(Set<Professor> professors) {
-		this.professors = professors;
-	}
-
-	public Set<Student> getStudents() {
-		return students;
-	}
-
-	public void setStudents(Set<Student> students) {
-		this.students = students;
-	}
-
-	public List<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
 
 }

@@ -12,10 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * @author Hp
  *
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Post implements Serializable {
 	/**
@@ -42,64 +51,4 @@ public class Post implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "idClass")
 	private Class classe;
-
-	public Post(long id, String type, String description) {
-		super();
-		this.id = id;
-		this.type = type;
-		this.description = description;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Group getGroup() {
-		return group;
-	}
-
-	public void setGroup(Group group) {
-		this.group = group;
-	}
-
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Class getClasse() {
-		return classe;
-	}
-
-	public void setClasse(Class classe) {
-		this.classe = classe;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 }

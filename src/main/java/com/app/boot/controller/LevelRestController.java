@@ -141,6 +141,7 @@ public class LevelRestController {
 				return ResponseEntity.notFound().build();
 			}
 			deletedLevelDTO = modelMapper.map(level, LevelDTO.class);
+
 			logLevelInfo(level, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
@@ -163,6 +164,7 @@ public class LevelRestController {
 				return ResponseEntity.notFound().build();
 			}
 			levelDTO = modelMapper.map(level, LevelDTO.class);
+
 			logLevelInfo(level, DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
