@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.boot.model.Establishment;
 
-@Service
-@Transactional
+
 public interface IServiceEstablishment {
 
 	public List<Establishment> getAll();
