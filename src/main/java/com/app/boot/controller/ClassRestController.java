@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.app.boot.dto.ClassDTO;
 import com.app.boot.exception.CodeOperationException;
 import com.app.boot.model.Class;
@@ -205,6 +207,30 @@ public class ClassRestController {
 		}
 
 		return ResponseEntity.ok(classEntity);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{className}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.class-rest-controller.getClassByclassName.value}", notes = "${swagger.class-rest-controller.getClassByclassName.notes}")
+	public ResponseEntity<List<Class>> getClassByclassName(
+			@ApiParam(value = "${swagger.class-rest-controller.getClassByclassName.className}", required = true) @PathVariable("className") String className) {
+		// final ClassDTO newClassDTO;
+		List<Class> classes = serviceClass.getClassByclassName(className);
+
+		try {
+			if (className == null) {
+				return ResponseEntity.notFound().build();
+			}
+			List<ClassDTO> classDTO = classes.stream().map(classEntity -> modelMapper.map(classEntity, ClassDTO.class))
+					.collect(Collectors.toList());
+
+			ResponseEntity.ok(classDTO);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(classes);
 	}
 
 	/**

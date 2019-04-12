@@ -31,7 +31,7 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> optionalUser = userRepository.getUserByEmail(email);
-		optionalUser.orElseThrow(() -> null);
+		optionalUser.orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 		return optionalUser.map(CustomUserDetails::new).get();
 	}
 

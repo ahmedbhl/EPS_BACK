@@ -2,6 +2,8 @@ package com.app.boot.dto;
 
 import java.util.Date;
 
+import com.app.boot.model.Administration;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -33,4 +35,7 @@ public class EstablishmentDTO {
 
 	@ApiModelProperty(value = "${swagger.establishment-dto.photos}")
 	private String photos;
+
+	@ApiModelProperty(value = "${swagger.establishment-dto.administration}")
+	private Administration administration;
 }
