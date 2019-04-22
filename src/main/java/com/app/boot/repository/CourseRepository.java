@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.app.boot.model.Class;
+import com.app.boot.model.Course;
 
 @Repository
-public interface ClassRepository extends JpaRepository<Class, Long> {
-	public List<Class> getClassByclassName(String className);
+public interface CourseRepository extends JpaRepository<Course, Long> {
+
+	public List<Course> getCourseBycourseName(String courseName);
 
 }
