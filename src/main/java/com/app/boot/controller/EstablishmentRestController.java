@@ -211,6 +211,32 @@ public class EstablishmentRestController {
 		return ResponseEntity.ok(establishment);
 	}
 
+	@ResponseBody
+	@GetMapping(value = "/{establishmentName}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.value}", notes = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.notes}")
+	public ResponseEntity<List<Establishment>> getEstablishmentByestablishmentName(
+			@ApiParam(value = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.establishmentName}", required = true) @PathVariable("establishmentName") String establishmentName) {
+		// final EstablishmentDTO newEstablishmentDTO;
+		List<Establishment> establishments = serviceEstablishment
+				.getEstablishmentByestablishmentName(establishmentName);
+
+		try {
+			if (establishmentName == null) {
+				return ResponseEntity.notFound().build();
+			}
+			List<EstablishmentDTO> establishmentDTO = establishments.stream()
+					.map(establishment -> modelMapper.map(establishment, EstablishmentDTO.class))
+					.collect(Collectors.toList());
+
+			ResponseEntity.ok(establishmentDTO);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(establishments);
+	}
+
 	/**
 	 * 
 	 * @param pairingModel

@@ -50,4 +50,9 @@ public class ServiceImplEstablishment implements IServiceEstablishment {
 		return establishmentRepository.findById(id);
 	}
 
+	@Override
+	public List<Establishment> getEstablishmentByestablishmentName(String establishmentName) {
+		return establishmentRepository.getEstablishmentByestablishmentName(establishmentName);
+	}
+
 }
