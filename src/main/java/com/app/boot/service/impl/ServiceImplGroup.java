@@ -3,9 +3,10 @@ package com.app.boot.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.app.boot.model.Group;
 import com.app.boot.repository.GroupRepository;
