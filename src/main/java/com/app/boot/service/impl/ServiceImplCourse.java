@@ -4,10 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.app.boot.model.Course;
 import com.app.boot.repository.CourseRepository;
 import com.app.boot.service.IServiceCourse;
 
+@Service
+@Transactional
 public class ServiceImplCourse implements IServiceCourse {
 
 	@Autowired
