@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.boot.model.Group;
 import com.app.boot.repository.GroupRepository;
 import com.app.boot.service.IServiceGroup;
 
+@Service
+@Transactional
 public class ServiceImplGroup implements IServiceGroup {
 	@Autowired
 	private GroupRepository groupRepository;
