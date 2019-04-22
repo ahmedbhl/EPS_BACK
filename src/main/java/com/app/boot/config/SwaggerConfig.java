@@ -43,12 +43,13 @@ public class SwaggerConfig {
 	}
 
 	/**
-	 * Define the ai paths
+	 * Define the api paths
 	 * 
 	 * @return
 	 */
 	private Predicate<String> postPaths() {
-		return PathSelectors.regex("/api/v1/users.*|/api/v1/establishments.*|/api/v1/levels.*|/api/v1/fields.*|/api/v1/classes.*|/api/v1/courses.*");
+		return PathSelectors.regex(
+				"/api/v1/users.*|/api/v1/establishments.*|/api/v1/levels.*|/api/v1/fields.*|/api/v1/classes.*|/api/v1/courses.*|/api/v1/groups.*");
 	}
 
 	private ApiInfo apiInfo() {
