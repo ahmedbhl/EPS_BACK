@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.boot.dto.UserDTO;
 import com.app.boot.exception.CodeOperationException;
 import com.app.boot.model.Administration;
+import com.app.boot.model.Student;
 import com.app.boot.model.User;
 import com.app.boot.service.IServiceAdministration;
 import com.app.boot.service.IServiceRole;
+import com.app.boot.service.IServiceStudent;
 import com.app.boot.service.IServiceUser;
 
 import io.swagger.annotations.ApiOperation;
@@ -57,6 +59,9 @@ public class UserRestController {
 
 	@Autowired
 	IServiceAdministration administrationService;
+
+	@Autowired
+	IServiceStudent studentService;
 
 	@Autowired
 	IServiceRole roleService;
@@ -153,6 +158,34 @@ public class UserRestController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newAdministrationDTO);
+	}
+
+	/**
+	 * Adding new Student
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "student", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createStudent.value}", notes = "${swagger.user-rest-controller.createStudent.notes}")
+	public ResponseEntity<UserDTO> createStudent(
+			@ApiParam(value = "${swagger.user-rest-controller.createStudent.Student}", required = true) @Valid @RequestBody UserDTO StudentDTO) {
+		// Map to model
+		Student student = modelMapper.map(StudentDTO, Student.class);
+		final UserDTO newStudentDTO;
+		try {
+			student.setRoles(Arrays.asList(roleService.getRoleByName("STUDENT")));
+			// Save the new Student
+			Student createdStudent = studentService.createStudent(student);
+			// Map to DTO
+			newStudentDTO = modelMapper.map(createdStudent, UserDTO.class);
+			logUserInfo(createdStudent, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newStudentDTO);
 	}
 
 	/**
