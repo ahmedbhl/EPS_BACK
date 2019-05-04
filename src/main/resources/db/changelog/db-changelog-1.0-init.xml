@@ -1,6 +1,5 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
@@ -59,7 +58,7 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="profil_picture" type="LONGTEXT">
+			<column name="profile_picture" type="LONGTEXT">
 				<constraints nullable="false" />
 			</column>
 
@@ -89,10 +88,64 @@
 	</changeSet>
 
 
+
+	<changeSet author="zayneb" id="createSuperAdminTable">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists schemaName="eps" tableName="super_admin"></tableExists>
+			</not>
+		</preConditions>
+		<createTable tableName="super_admin">
+			<column autoIncrement="true" name="id" type="BIGINT">
+				<constraints foreignKeyName="super_admin_fk_id" references="user(id)" />
+			</column>
+		</createTable>
+	</changeSet>
+
+
+	<changeSet author="zayneb" id="createAdministrationTable">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists schemaName="eps" tableName="administration"></tableExists>
+			</not>
+		</preConditions>
+		<createTable tableName="administration">
+			<column autoIncrement="true" name="id" type="BIGINT">
+				<constraints foreignKeyName="administration_fk_id"  references="user(id)" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet author="zayneb" id="createStudentTable">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists schemaName="eps" tableName="student"></tableExists>
+			</not>
+		</preConditions>
+		<createTable tableName="student">
+			<column autoIncrement="true" name="id" type="BIGINT">
+				<constraints  foreignKeyName="student_fk_id" references="user(id)" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet author="zayneb" id="createProfessorTable">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists schemaName="eps" tableName="professor"></tableExists>
+			</not>
+		</preConditions>
+		<createTable tableName="professor">
+			<column autoIncrement="true" name="id" type="BIGINT">
+				<constraints foreignKeyName="professor_fk_id" references="user(id)" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+
 	<changeSet author="zayneb" id="insertRole">
-		<sqlFile path="../sql/insertRole.sql"
-			relativeToChangelogFile="true" splitStatements="true"
-			stripComments="true" />
+		<sqlFile path="../sql/insertRole.sql" relativeToChangelogFile="true"
+			splitStatements="true" stripComments="true" />
 	</changeSet>
 
 </databaseChangeLog>

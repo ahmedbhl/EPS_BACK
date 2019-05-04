@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Set;
 
 import com.app.boot.model.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -84,4 +86,7 @@ public class UserDTO {
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
 	private Date dateOfRegistration;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
 }

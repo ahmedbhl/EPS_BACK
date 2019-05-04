@@ -1,5 +1,6 @@
 package com.app.boot.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.boot.dto.UserDTO;
 import com.app.boot.exception.CodeOperationException;
+import com.app.boot.model.Administration;
 import com.app.boot.model.User;
+import com.app.boot.service.IServiceAdministration;
+import com.app.boot.service.IServiceRole;
 import com.app.boot.service.IServiceUser;
 
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +54,12 @@ public class UserRestController {
 
 	@Autowired
 	IServiceUser userService;
+
+	@Autowired
+	IServiceAdministration administrationService;
+
+	@Autowired
+	IServiceRole roleService;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -115,6 +125,34 @@ public class UserRestController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newUserDTO);
+	}
+
+	/**
+	 * Adding new Administration
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "administration", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createAdministration.value}", notes = "${swagger.user-rest-controller.createAdministration.notes}")
+	public ResponseEntity<UserDTO> createAdministration(
+			@ApiParam(value = "${swagger.user-rest-controller.createAdministration.administration}", required = true) @Valid @RequestBody UserDTO AdministrationDTO) {
+		// Map to model
+		Administration administration = modelMapper.map(AdministrationDTO, Administration.class);
+		final UserDTO newAdministrationDTO;
+		try {
+			administration.setRoles(Arrays.asList(roleService.getRoleByName("ADMINISTRATION")));
+			// Save the new Administration
+			Administration createdAdministration = administrationService.createAdministration(administration);
+			// Map to DTO
+			newAdministrationDTO = modelMapper.map(createdAdministration, UserDTO.class);
+			logUserInfo(createdAdministration, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newAdministrationDTO);
 	}
 
 	/**

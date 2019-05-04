@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/v1/posts.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
 
 				.anyRequest().fullyAuthenticated().and().formLogin().permitAll();
-		// .httpBasic();
+		// .anyRequest().authenticated().and().httpBasic();
 
 	}
 
