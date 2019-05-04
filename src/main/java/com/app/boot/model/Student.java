@@ -1,5 +1,6 @@
 package com.app.boot.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Student extends User {
+public class Student extends User implements Serializable {
 
 	/**
 	 * 

@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.boot.dto.UserDTO;
 import com.app.boot.exception.CodeOperationException;
 import com.app.boot.model.Administration;
+import com.app.boot.model.Professor;
 import com.app.boot.model.Student;
 import com.app.boot.model.User;
 import com.app.boot.service.IServiceAdministration;
+import com.app.boot.service.IServiceProfessor;
 import com.app.boot.service.IServiceRole;
 import com.app.boot.service.IServiceStudent;
 import com.app.boot.service.IServiceUser;
@@ -62,6 +64,9 @@ public class UserRestController {
 
 	@Autowired
 	IServiceStudent studentService;
+
+	@Autowired
+	IServiceProfessor professorService;
 
 	@Autowired
 	IServiceRole roleService;
@@ -186,6 +191,34 @@ public class UserRestController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newStudentDTO);
+	}
+
+	/**
+	 * Adding new Professor
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "professor", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createProfessor.value}", notes = "${swagger.user-rest-controller.createProfessor.notes}")
+	public ResponseEntity<UserDTO> createProfessor(
+			@ApiParam(value = "${swagger.user-rest-controller.createProfessor.professor}", required = true) @Valid @RequestBody UserDTO ProfessorDTO) {
+		// Map to model
+		Professor professor = modelMapper.map(ProfessorDTO, Professor.class);
+		final UserDTO newProfessorDTO;
+		try {
+			professor.setRoles(Arrays.asList(roleService.getRoleByName("PROFESSOR")));
+			// Save the new Professor
+			Professor createdProfessor = professorService.createProfessor(professor);
+			// Map to DTO
+			newProfessorDTO = modelMapper.map(createdProfessor, UserDTO.class);
+			logUserInfo(createdProfessor, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newProfessorDTO);
 	}
 
 	/**
