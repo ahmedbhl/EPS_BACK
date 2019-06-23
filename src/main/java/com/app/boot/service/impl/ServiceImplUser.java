@@ -75,10 +75,19 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 	 */
 	@Override
 	public User updateUser(User user) {
-		User updatedUser = userRepository.findById(user.getId())
-				.orElseThrow(() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
-						user.getId().toString()));
-		return userRepository.save(updatedUser);
+		User updateduser = userRepository.findById(user.getId()).get();
+		if (updateduser != null) {
+			if (user != null && user.getPassword() != null) {
+				String encryptPassword = passwordEncoder.encode(user.getPassword());
+				user.setPassword(encryptPassword);
+			} else {
+				user.setPassword(updateduser.getPassword());
+			}
+			return userRepository.save(user);
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+					user.getId().toString());
+		}
 	}
 
 	/*

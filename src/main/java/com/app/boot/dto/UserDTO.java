@@ -24,7 +24,7 @@ public class UserDTO {
 	/*
 	 * Id
 	 */
-	@ApiModelProperty(value = "${swagger.user-dto.id}")
+	@ApiModelProperty(value = "${swagger.user-dto.id}", position = 1)
 	private Long id;
 
 	/*
@@ -52,12 +52,6 @@ public class UserDTO {
 	private String lastName;
 
 	/*
-	 * Year Of the Registration
-	 */
-	@ApiModelProperty(value = "${swagger.user-dto.yearOfRegistration}")
-	private Date yearOfRegistration;
-
-	/*
 	 * User Phone Number
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.phoneNumber}")
@@ -70,12 +64,6 @@ public class UserDTO {
 	private String profilePicture;
 
 	/*
-	 * Sex of the user
-	 */
-	@ApiModelProperty(value = "${swagger.user-dto.sex}")
-	private String sex;
-
-	/*
 	 * User Adresse
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.address}")
@@ -86,7 +74,7 @@ public class UserDTO {
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
 	private Date dateOfRegistration;
-	
+
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 }

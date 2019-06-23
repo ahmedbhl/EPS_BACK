@@ -1,5 +1,7 @@
 package com.app.boot.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,10 +41,28 @@ public class ServiceStudent implements IServiceStudent {
 	 */
 	@Override
 	public Student updateStudent(Student student) {
-		Student updatedstudent = studentRepository.findById(student.getId())
-				.orElseThrow(() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
-						student.getId().toString()));
-		return studentRepository.save(updatedstudent);
+		Student updatedStudent = studentRepository.findById(student.getId()).get();
+		if (updatedStudent != null) {
+			if (student != null && student.getPassword() != null) {
+				String encryptPassword = passwordEncoder.encode(student.getPassword());
+				student.setPassword(encryptPassword);
+			} else {
+				student.setPassword(updatedStudent.getPassword());
+			}
+			return studentRepository.save(student);
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+					student.getId().toString());
+		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.app.boot.IServiceStudent#getStudentByid
+	 */
+	@Override
+	public Optional<Student> getStudentByid(Long id) {
+		return studentRepository.findById(id);
+	}
 }

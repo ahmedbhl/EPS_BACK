@@ -1,5 +1,7 @@
 package com.app.boot.service;
 
+import java.util.Optional;
+
 import com.app.boot.model.Professor;
 
 public interface IServiceProfessor {
@@ -19,4 +21,12 @@ public interface IServiceProfessor {
 	 * @return
 	 */
 	Professor updateProfessor(Professor professor);
+	
+	/**
+	 * Get the Professor ID
+	 * 
+	 * @param id
+	 * @return the Professor by ID
+	 */
+	Optional<Professor> getProfessorByid(Long id);
 }

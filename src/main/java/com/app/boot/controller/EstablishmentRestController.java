@@ -27,7 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.boot.dto.EstablishmentDTO;
 import com.app.boot.exception.CodeOperationException;
+import com.app.boot.mapper.EstablishementMapper;
+import com.app.boot.model.Administration;
 import com.app.boot.model.Establishment;
+import com.app.boot.service.IServiceAdministration;
 import com.app.boot.service.IServiceEstablishment;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +39,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import net.logstash.logback.marker.Markers;
 
 @CrossOrigin
@@ -52,7 +58,15 @@ public class EstablishmentRestController {
 	private IServiceEstablishment serviceEstablishment;
 
 	@Autowired
+	IServiceAdministration serviceAdministration;
+
+	@Autowired
 	private ModelMapper modelMapper;
+
+	/**
+	 * Mapper factory
+	 */
+	private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
 	private static final String ADDING_MESSAGE = " Establishment Adding ";
 
@@ -94,14 +108,23 @@ public class EstablishmentRestController {
 	@ApiOperation(value = "${swagger.establishment-rest-controller.createEstablishment.value}", notes = "${swagger.establishment-rest-controller.createEstablishment.notes}")
 	public ResponseEntity<EstablishmentDTO> createEstablishment(
 			@ApiParam(value = "${swagger.establishment-rest-controller.createEstablishment.establishment}", required = true) @Valid @RequestBody EstablishmentDTO establishmentDTO) {
+
 		// Map to model
 		Establishment establishment = modelMapper.map(establishmentDTO, Establishment.class);
 		final EstablishmentDTO newEstablishmentDTO;
 		try {
+			Administration administration = serviceAdministration
+					.getAdministrationByid(establishmentDTO.getAdministration()).orElseThrow(
+							() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+									establishmentDTO.getId().toString()));
+			establishment.setAdministration(administration);
 			// Save the new Establishment
 			Establishment createdEstablishment = serviceEstablishment.Create(establishment);
+			EstablishementMapper customMapper = new EstablishementMapper();
+			mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+			MapperFacade mapper = mapperFactory.getMapperFacade();
 			// Map to DTO
-			newEstablishmentDTO = modelMapper.map(createdEstablishment, EstablishmentDTO.class);
+			newEstablishmentDTO = mapper.map(createdEstablishment, EstablishmentDTO.class);
 			logEstablishmentInfo(createdEstablishment, ADDING_MESSAGE);
 		} catch (CodeOperationException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
