@@ -2,6 +2,7 @@ package com.app.boot.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -91,9 +92,13 @@ public class EstablishmentRestController {
 	@ApiOperation(value = "${swagger.establishment-rest-controller.getAllEstablishments.value}", notes = "${swagger.establishment-rest-controller.getAllEstablishments.notes}")
 	public ResponseEntity<List<EstablishmentDTO>> getAllEstablishments() {
 		List<Establishment> establishments = serviceEstablishment.getAll();
+
+		EstablishementMapper customMapper = new EstablishementMapper();
+		mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+		MapperFacade mapper = mapperFactory.getMapperFacade();
 		List<EstablishmentDTO> establishmentsDTO = establishments.stream()
-				.map(establishment -> modelMapper.map(establishment, EstablishmentDTO.class))
-				.collect(Collectors.toList());
+				.map(establishment -> mapper.map(establishment, EstablishmentDTO.class)).collect(Collectors.toList());
+
 		return ResponseEntity.ok(establishmentsDTO);
 	}
 
@@ -150,11 +155,26 @@ public class EstablishmentRestController {
 		Establishment establishment = modelMapper.map(establishmentDTO, Establishment.class);
 		final EstablishmentDTO updateEstablishment;
 		try {
+			Optional<Establishment> isExistedEstablishement = serviceEstablishment.getEstablishmentById(id);
+			if (!isExistedEstablishement.isPresent()) {
+				return ResponseEntity.notFound().build();
+			}
+
+			Administration administration = serviceAdministration
+					.getAdministrationByid(establishmentDTO.getAdministration()).orElseThrow(
+							() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+									establishmentDTO.getId().toString()));
+			establishment.setAdministration(administration);
 			establishment.setYearOfFoundation(new Date());
+			establishment.setId(id);
 			// Update the establishment
 			Establishment updatedEstablishment = serviceEstablishment.Update(establishment);
+
+			EstablishementMapper customMapper = new EstablishementMapper();
+			mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+			MapperFacade mapper = mapperFactory.getMapperFacade();
 			// Map to dto
-			updateEstablishment = modelMapper.map(updatedEstablishment, EstablishmentDTO.class);
+			updateEstablishment = mapper.map(updatedEstablishment, EstablishmentDTO.class);
 			logEstablishmentInfo(updatedEstablishment, UPDATE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
@@ -166,22 +186,26 @@ public class EstablishmentRestController {
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.delete.value}", notes = "${swagger.establishment-rest-controller.delete.notes}")
-	public ResponseEntity<Establishment> delete(
-			@ApiParam(value = "${swagger.establishment-rest-controller.delete}", required = true) @PathVariable("id") Long id) {
+	public ResponseEntity<EstablishmentDTO> delete(
+			@ApiParam(value = "${swagger.establishment-rest-controller.delete}", required = true) @RequestBody EstablishmentDTO establishementDTO) {
 
-		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
+		final Optional<Establishment> establishment = serviceEstablishment
+				.getEstablishmentById(establishementDTO.getId());
 		try {
-			if (establishment == null) {
+			if (!establishment.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
-			serviceEstablishment.Delete(establishment);
-			;
-			logEstablishmentInfo(establishment, DELETE_MESSAGE);
+			serviceEstablishment.delete(establishment.get());
+			logEstablishmentInfo(establishment.get(), DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(establishment);
+		EstablishementMapper customMapper = new EstablishementMapper();
+		mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+		MapperFacade mapper = mapperFactory.getMapperFacade();
+		EstablishmentDTO deletedEstablishmentDTO = mapper.map(establishment.get(), EstablishmentDTO.class);
+		return ResponseEntity.ok(deletedEstablishmentDTO);
 	}
 
 	/**
@@ -194,53 +218,59 @@ public class EstablishmentRestController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.delete.value}", notes = "${swagger.establishment-rest-controller.delete.notes}")
-	public ResponseEntity<Establishment> deleteById(
+	public ResponseEntity<EstablishmentDTO> deleteById(
 			@ApiParam(value = "${swagger.establishment-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
 
-		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
+		final Optional<Establishment> establishment = serviceEstablishment.getEstablishmentById(id);
 		try {
-			if (establishment == null) {
+			if (!establishment.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
-			serviceEstablishment.DeleteById(id);
-			logEstablishmentInfo(establishment, DELETE_MESSAGE);
+			serviceEstablishment.deleteById(id);
+			logEstablishmentInfo(establishment.get(), DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(establishment);
+		EstablishementMapper customMapper = new EstablishementMapper();
+		mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+		MapperFacade mapper = mapperFactory.getMapperFacade();
+		EstablishmentDTO deletedEstablishmentDTO = mapper.map(establishment.get(), EstablishmentDTO.class);
+		return ResponseEntity.ok(deletedEstablishmentDTO);
 	}
 
 	@ResponseBody
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.getById.value}", notes = "${swagger.establishment-rest-controller.getById.notes}")
-	public ResponseEntity<Establishment> getEstablishmentById(
+	public ResponseEntity<EstablishmentDTO> getEstablishmentById(
 			@ApiParam(value = "${swagger.establishment-rest-controller.getById.id}", required = true) @PathVariable("id") Long id) {
 		final EstablishmentDTO newEstablishmentDTO;
 
-		final Establishment establishment = serviceEstablishment.getEstablishmentById(id).get();
+		final Optional<Establishment> establishment = serviceEstablishment.getEstablishmentById(id);
 		try {
-			if (establishment == null) {
+			if (!establishment.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
-			newEstablishmentDTO = modelMapper.map(establishment, EstablishmentDTO.class);
+			EstablishementMapper customMapper = new EstablishementMapper();
+			mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+			MapperFacade mapper = mapperFactory.getMapperFacade();
+			newEstablishmentDTO = mapper.map(establishment.get(), EstablishmentDTO.class);
 
-			ResponseEntity.ok(newEstablishmentDTO);
+			return ResponseEntity.ok(newEstablishmentDTO);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(establishment);
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{establishmentName}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/name/{establishmentName}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.value}", notes = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.notes}")
-	public ResponseEntity<List<Establishment>> getEstablishmentByestablishmentName(
+	public ResponseEntity<List<EstablishmentDTO>> getEstablishmentByestablishmentName(
 			@ApiParam(value = "${swagger.establishment-rest-controller.getEstablishmentByestablishmentName.establishmentName}", required = true) @PathVariable("establishmentName") String establishmentName) {
-		// final EstablishmentDTO newEstablishmentDTO;
+
 		List<Establishment> establishments = serviceEstablishment
 				.getEstablishmentByestablishmentName(establishmentName);
 
@@ -248,16 +278,18 @@ public class EstablishmentRestController {
 			if (establishmentName == null) {
 				return ResponseEntity.notFound().build();
 			}
-			List<EstablishmentDTO> establishmentDTO = establishments.stream()
-					.map(establishment -> modelMapper.map(establishment, EstablishmentDTO.class))
-					.collect(Collectors.toList());
 
-			ResponseEntity.ok(establishmentDTO);
+			EstablishementMapper customMapper = new EstablishementMapper();
+			mapperFactory.classMap(Establishment.class, EstablishmentDTO.class).customize(customMapper).register();
+			MapperFacade mapper = mapperFactory.getMapperFacade();
+			List<EstablishmentDTO> establishmentsDTO = establishments.stream()
+					.map(establishment -> mapper.map(establishment, EstablishmentDTO.class))
+					.collect(Collectors.toList());
+			return ResponseEntity.ok(establishmentsDTO);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(establishments);
 	}
 
 	/**

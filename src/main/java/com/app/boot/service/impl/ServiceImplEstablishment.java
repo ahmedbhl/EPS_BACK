@@ -34,13 +34,13 @@ public class ServiceImplEstablishment implements IServiceEstablishment {
 	}
 
 	@Override
-	public void Delete(Establishment establishment) {
+	public void delete(Establishment establishment) {
 		establishmentRepository.delete(establishment);
 
 	}
 
 	@Override
-	public void DeleteById(Long id) {
+	public void deleteById(Long id) {
 		establishmentRepository.deleteById(id);
 
 	}

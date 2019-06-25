@@ -49,7 +49,7 @@ public class Establishment implements Serializable {
 
 	private String photos;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private Administration administration;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
