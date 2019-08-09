@@ -77,4 +77,19 @@ public class UserDTO {
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean accountNonExpired;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean accountNonLocked;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean credentialsNonExpired;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean enabled;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private String authorities;
 }

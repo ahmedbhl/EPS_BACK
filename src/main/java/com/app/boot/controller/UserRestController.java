@@ -1,5 +1,6 @@
 package com.app.boot.controller;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +48,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import net.logstash.logback.marker.Markers;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/users")
 @SwaggerDefinition(tags = {
@@ -94,6 +96,15 @@ public class UserRestController {
 	 * Logger
 	 **/
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
+
+	@ResponseBody
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@RequestMapping({ "/currentUser" })
+	public ResponseEntity<UserDTO> user(Principal user) {
+		return ResponseEntity.ok(
+				modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), UserDTO.class));
+	}
 
 	/**
 	 * Get the list of all Users
