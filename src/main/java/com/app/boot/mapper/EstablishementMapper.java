@@ -11,7 +11,7 @@ public class EstablishementMapper extends CustomMapper<Establishment, Establishm
 	@Override
 	public void mapAtoB(Establishment a, EstablishmentDTO b, MappingContext context) {
 		b.setId(a.getId());
-		b.setAdministration(a.getAdministration().getId());
+		b.setAdministration(a.getAdministration());
 		b.setDescription(a.getDescription());
 		b.setEstablishmentName(a.getEstablishmentName());
 		b.setLocation(a.getLocation());

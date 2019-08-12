@@ -49,7 +49,7 @@ public class Establishment implements Serializable {
 
 	private String photos;
 
-	@OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Administration administration;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -58,19 +58,12 @@ public class Establishment implements Serializable {
 					@JoinColumn(name = "professors_id", referencedColumnName = "id") })
 	private Set<Professor> professors;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "establishment_students", joinColumns = {
-			@JoinColumn(name = "establishment_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "students_id", referencedColumnName = "id") })
+	@JsonIgnore
+	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
 	private Set<Student> students;
-
-	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
-	private Set<Class> classes;
-
-	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
-	private Set<Field> fields;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "establishment", cascade = { CascadeType.ALL })
 	private Set<Level> levels;
+
 }

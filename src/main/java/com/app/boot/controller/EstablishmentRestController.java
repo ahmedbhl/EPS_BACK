@@ -119,7 +119,7 @@ public class EstablishmentRestController {
 		final EstablishmentDTO newEstablishmentDTO;
 		try {
 			Administration administration = serviceAdministration
-					.getAdministrationByid(establishmentDTO.getAdministration()).orElseThrow(
+					.getAdministrationByid(establishmentDTO.getAdministration().getId()).orElseThrow(
 							() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
 									establishmentDTO.getId().toString()));
 			establishment.setAdministration(administration);
@@ -161,7 +161,7 @@ public class EstablishmentRestController {
 			}
 
 			Administration administration = serviceAdministration
-					.getAdministrationByid(establishmentDTO.getAdministration()).orElseThrow(
+					.getAdministrationByid(establishmentDTO.getAdministration().getId()).orElseThrow(
 							() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
 									establishmentDTO.getId().toString()));
 			establishment.setAdministration(administration);

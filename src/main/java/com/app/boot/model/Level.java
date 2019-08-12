@@ -50,6 +50,6 @@ public class Level implements Serializable {
 	private Establishment establishment;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "level", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "level", cascade = { CascadeType.REMOVE,CascadeType.MERGE})
 	private Set<Field> fields;
 }
