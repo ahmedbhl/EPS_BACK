@@ -8,11 +8,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.app.boot.repository.UserReposiroty;
 
+@SuppressWarnings("deprecation")
 @EnableWebSecurity
 @EnableJpaRepositories(basePackageClasses = UserReposiroty.class)
 @Configuration
@@ -50,27 +55,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		// @formatter:off
-		http.csrf().disable();
-		http.authorizeRequests()
+		http.csrf().disable().exceptionHandling().and()
+
+				// don't create session
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		http.antMatcher("/api/v1/**").authorizeRequests()
 				// @formatter:off
 				.antMatchers("/api/v1/users/currentUser").permitAll()
-				.antMatchers("/api/v1/users/**").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/establishments.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/levels.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/fields.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/classes.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/courses.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/groups.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-				.antMatchers("/api/v1/posts.*").hasAnyRole(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
-
-				// .anyRequest().fullyAuthenticated().and().formLogin().permitAll();
-		 .anyRequest().authenticated().and().httpBasic();
+				.antMatchers("/api/v1/users/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/establishments/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/levels/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/fields/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/classes/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/courses/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/groups/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/posts/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.anyRequest().authenticated().and().httpBasic();
+		http.cors();
 
 	}
 
 	@Bean
 	public BCryptPasswordEncoder encodePWD() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurerAdapter() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("http://localhost:4200")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+						.allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "authorization")
+						.exposedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "authorization")
+						.maxAge(4200);
+			}
+		};
 	}
 
 }

@@ -98,9 +98,8 @@ public class UserRestController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
 
 	@ResponseBody
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
-	@RequestMapping({ "/currentUser" })
 	public ResponseEntity<UserDTO> user(Principal user) {
 		return ResponseEntity.ok(
 				modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), UserDTO.class));

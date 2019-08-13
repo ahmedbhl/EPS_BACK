@@ -45,7 +45,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import net.logstash.logback.marker.Markers;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1/establishments")
 @SwaggerDefinition(tags = {
