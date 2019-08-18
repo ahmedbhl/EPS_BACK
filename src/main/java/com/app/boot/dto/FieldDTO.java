@@ -1,9 +1,5 @@
 package com.app.boot.dto;
 
-import java.util.Set;
-
-import com.app.boot.model.Class;
-import com.app.boot.model.Establishment;
 import com.app.boot.model.Level;
 
 import io.swagger.annotations.ApiModel;
@@ -29,12 +25,7 @@ public class FieldDTO {
 	@ApiModelProperty(value = "${swagger.field-dto.description}")
 	private String description;
 
-	@ApiModelProperty(value = "${swagger.field-dto.establishment}")
-	private Establishment establishment;
-
 	@ApiModelProperty(value = "${swagger.field-dto.level}")
 	private Level level;
 
-	@ApiModelProperty(value = "${swagger.field-dto.classes}")
-	private Set<Class> classes;
 }

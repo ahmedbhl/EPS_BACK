@@ -52,6 +52,7 @@ public class Establishment implements Serializable {
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Administration administration;
 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "establishment_professors", joinColumns = {
 			@JoinColumn(name = "establishment_id", referencedColumnName = "id") }, inverseJoinColumns = {
