@@ -38,7 +38,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import net.logstash.logback.marker.Markers;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/levels")
 @SwaggerDefinition(tags = {

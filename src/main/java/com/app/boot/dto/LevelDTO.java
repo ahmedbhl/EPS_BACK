@@ -1,9 +1,8 @@
 package com.app.boot.dto;
 
-import java.util.Set;
-
 import com.app.boot.model.Establishment;
-import com.app.boot.model.Field;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,10 +27,7 @@ public class LevelDTO {
 	@ApiModelProperty(value = "${swagger.level-dto.description}")
 	private String description;
 
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@ApiModelProperty(value = "${swagger.level-dto.establishment}")
 	private Establishment establishment;
-
-	@ApiModelProperty(value = "${swagger.level-dto.fields}")
-	private Set<Field> fields;
-
 }

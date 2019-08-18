@@ -2,7 +2,7 @@ package com.app.boot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -14,7 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -50,9 +50,11 @@ public class User implements Serializable {
 
 	private String lastName;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "users_role", joinColumns = {
+			@JoinColumn(name = "user_id", referencedColumnName = "id", unique = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "role_id", referencedColumnName = "id", unique = false) })
+	private List<Role> roles;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateOfRegistration;

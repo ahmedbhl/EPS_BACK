@@ -13,9 +13,9 @@ public interface IServiceEstablishment {
 
 	public Establishment Update(Establishment establishment);
 
-	public void Delete(Establishment establishment);
+	public void delete(Establishment establishment);
 
-	public void DeleteById(Long id);
+	public void deleteById(Long id);
 
 	public Optional<Establishment> getEstablishmentById(Long id);
 

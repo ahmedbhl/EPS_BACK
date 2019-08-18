@@ -38,15 +38,11 @@ public class Field implements Serializable {
 	private String description;
 
 	@ManyToOne
-	@JoinColumn(name = "idEstablishment")
-	private Establishment establishment;
-
-	@ManyToOne
 	@JoinColumn(name = "idLevel")
 	private Level level;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "field", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "field", cascade = { CascadeType.REMOVE })
 	private Set<Class> classes;
 
 }

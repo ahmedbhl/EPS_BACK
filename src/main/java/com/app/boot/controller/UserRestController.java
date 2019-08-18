@@ -1,5 +1,7 @@
 package com.app.boot.controller;
 
+import java.security.Principal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.boot.dto.UserDTO;
 import com.app.boot.exception.CodeOperationException;
+import com.app.boot.model.Administration;
+import com.app.boot.model.Professor;
+import com.app.boot.model.Student;
 import com.app.boot.model.User;
+import com.app.boot.service.IServiceAdministration;
+import com.app.boot.service.IServiceProfessor;
+import com.app.boot.service.IServiceRole;
+import com.app.boot.service.IServiceStudent;
 import com.app.boot.service.IServiceUser;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,7 +48,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import net.logstash.logback.marker.Markers;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/users")
 @SwaggerDefinition(tags = {
@@ -50,6 +60,18 @@ public class UserRestController {
 
 	@Autowired
 	IServiceUser userService;
+
+	@Autowired
+	IServiceAdministration administrationService;
+
+	@Autowired
+	IServiceStudent studentService;
+
+	@Autowired
+	IServiceProfessor professorService;
+
+	@Autowired
+	IServiceRole roleService;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -74,6 +96,14 @@ public class UserRestController {
 	 * Logger
 	 **/
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
+
+	@ResponseBody
+	@GetMapping(path="/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<UserDTO> user(Principal user) {
+		return ResponseEntity.ok(
+				modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), UserDTO.class));
+	}
 
 	/**
 	 * Get the list of all Users
@@ -118,6 +148,90 @@ public class UserRestController {
 	}
 
 	/**
+	 * Adding new Administration
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "administration", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createAdministration.value}", notes = "${swagger.user-rest-controller.createAdministration.notes}")
+	public ResponseEntity<UserDTO> createAdministration(
+			@ApiParam(value = "${swagger.user-rest-controller.createAdministration.administration}", required = true) @Valid @RequestBody UserDTO AdministrationDTO) {
+		// Map to model
+		Administration administration = modelMapper.map(AdministrationDTO, Administration.class);
+		final UserDTO newAdministrationDTO;
+		try {
+			administration.setRoles(Arrays.asList(roleService.getRoleByName("ADMINISTRATION")));
+			// Save the new Administration
+			Administration createdAdministration = administrationService.createAdministration(administration);
+			// Map to DTO
+			newAdministrationDTO = modelMapper.map(createdAdministration, UserDTO.class);
+			logUserInfo(createdAdministration, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newAdministrationDTO);
+	}
+
+	/**
+	 * Adding new Student
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "student", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createStudent.value}", notes = "${swagger.user-rest-controller.createStudent.notes}")
+	public ResponseEntity<UserDTO> createStudent(
+			@ApiParam(value = "${swagger.user-rest-controller.createStudent.Student}", required = true) @Valid @RequestBody UserDTO StudentDTO) {
+		// Map to model
+		Student student = modelMapper.map(StudentDTO, Student.class);
+		final UserDTO newStudentDTO;
+		try {
+			student.setRoles(Arrays.asList(roleService.getRoleByName("STUDENT")));
+			// Save the new Student
+			Student createdStudent = studentService.createStudent(student);
+			// Map to DTO
+			newStudentDTO = modelMapper.map(createdStudent, UserDTO.class);
+			logUserInfo(createdStudent, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newStudentDTO);
+	}
+
+	/**
+	 * Adding new Professor
+	 * 
+	 * @param userDTO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value = "professor", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@ApiOperation(value = "${swagger.user-rest-controller.createProfessor.value}", notes = "${swagger.user-rest-controller.createProfessor.notes}")
+	public ResponseEntity<UserDTO> createProfessor(
+			@ApiParam(value = "${swagger.user-rest-controller.createProfessor.professor}", required = true) @Valid @RequestBody UserDTO ProfessorDTO) {
+		// Map to model
+		Professor professor = modelMapper.map(ProfessorDTO, Professor.class);
+		final UserDTO newProfessorDTO;
+		try {
+			professor.setRoles(Arrays.asList(roleService.getRoleByName("PROFESSOR")));
+			// Save the new Professor
+			Professor createdProfessor = professorService.createProfessor(professor);
+			// Map to DTO
+			newProfessorDTO = modelMapper.map(createdProfessor, UserDTO.class);
+			logUserInfo(createdProfessor, ADDING_MESSAGE);
+		} catch (CodeOperationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(newProfessorDTO);
+	}
+
+	/**
 	 * Update the User
 	 * 
 	 * @param userDTO
@@ -135,16 +249,130 @@ public class UserRestController {
 		User user = modelMapper.map(userDTO, User.class);
 		final UserDTO updateUser;
 		try {
-			user.setDateOfRegistration(new Date());
-			// Update the user
-			User updUser = userService.updateUser(user);
-			// Map to dto
-			updateUser = modelMapper.map(updUser, UserDTO.class);
-			logUserInfo(updUser, UPDATE_MESSAGE);
+			if (id != null && userService.getUserByid(id).isPresent()) {
+				user.setId(id);
+				user.setDateOfRegistration(new Date());
+				// Update the user
+				User updUser = userService.updateUser(user);
+				// Map to dto
+				updateUser = modelMapper.map(updUser, UserDTO.class);
+				logUserInfo(updUser, UPDATE_MESSAGE);
+				return ResponseEntity.status(HttpStatus.OK).body(updateUser);
+
+			}
+			return ResponseEntity.notFound().build();
+
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(updateUser);
+	}
+
+	/**
+	 * Update the Administration
+	 * 
+	 * @param administrationDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/administration/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.update.value}", notes = "${swagger.user-rest-controller.update.notes}")
+	public ResponseEntity<UserDTO> updateAdministrateur(
+			@ApiParam(value = "${swagger.user-rest-controller.update.administration}") @RequestBody UserDTO administrationDTO,
+			@ApiParam(value = "${swagger.user-rest-controller.update.administration.id}") @PathVariable("id") Long id) {
+		// Map with model
+		Administration administration = modelMapper.map(administrationDTO, Administration.class);
+		final UserDTO updateAdministration;
+		try {
+			if (id != null && administrationService.getAdministrationByid(id).isPresent()) {
+				administration.setId(id);
+				administration.setDateOfRegistration(new Date());
+				// Update the administration
+				Administration updAdministration = administrationService.updateAdministration(administration);
+				// Map to dto
+				updateAdministration = modelMapper.map(updAdministration, UserDTO.class);
+				logUserInfo(updAdministration, UPDATE_MESSAGE);
+				return ResponseEntity.status(HttpStatus.OK).body(updateAdministration);
+
+			}
+			return ResponseEntity.notFound().build();
+
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	/**
+	 * Update the Professor
+	 * 
+	 * @param professorDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/professor/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.update.value}", notes = "${swagger.user-rest-controller.update.notes}")
+	public ResponseEntity<UserDTO> updateProfessor(
+			@ApiParam(value = "${swagger.user-rest-controller.update.professor}") @RequestBody UserDTO professorDTO,
+			@ApiParam(value = "${swagger.user-rest-controller.update.professor.id}") @PathVariable("id") Long id) {
+		// Map with model
+		Professor professor = modelMapper.map(professorDTO, Professor.class);
+		final UserDTO updateProfessor;
+		try {
+			if (id != null && professorService.getProfessorByid(id).isPresent()) {
+				professor.setId(id);
+				professor.setDateOfRegistration(new Date());
+				// Update the professor
+				Professor updProfessor = professorService.updateProfessor(professor);
+				// Map to dto
+				updateProfessor = modelMapper.map(updProfessor, UserDTO.class);
+				logUserInfo(updProfessor, UPDATE_MESSAGE);
+				return ResponseEntity.status(HttpStatus.OK).body(updateProfessor);
+
+			}
+			return ResponseEntity.notFound().build();
+
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	/**
+	 * Update the Student
+	 * 
+	 * @param StudentDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/student/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.update.value}", notes = "${swagger.user-rest-controller.update.notes}")
+	public ResponseEntity<UserDTO> updateStudent(
+			@ApiParam(value = "${swagger.user-rest-controller.update.student}") @RequestBody UserDTO studentDTO,
+			@ApiParam(value = "${swagger.user-rest-controller.update.student.id}") @PathVariable("id") Long id) {
+		// Map with model
+		Student student = modelMapper.map(studentDTO, Student.class);
+		final UserDTO updateStudent;
+		try {
+			if (id != null && studentService.getStudentByid(id).isPresent()) {
+				student.setId(id);
+				student.setDateOfRegistration(new Date());
+				// Update the student
+				Student updStudent = studentService.updateStudent(student);
+				// Map to dto
+				updateStudent = modelMapper.map(updStudent, UserDTO.class);
+				logUserInfo(updStudent, UPDATE_MESSAGE);
+				return ResponseEntity.status(HttpStatus.OK).body(updateStudent);
+
+			}
+			return ResponseEntity.notFound().build();
+
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	/**
@@ -157,7 +385,7 @@ public class UserRestController {
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "${swagger.user-rest-controller.delete.value}", notes = "${swagger.user-rest-controller.delete.notes}")
-	public ResponseEntity<User> deletePairing(
+	public ResponseEntity<User> deleteUser(
 			@ApiParam(value = "${swagger.user-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
 		final User user;
 		try {

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Set;
 
 import com.app.boot.model.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +24,7 @@ public class UserDTO {
 	/*
 	 * Id
 	 */
-	@ApiModelProperty(value = "${swagger.user-dto.id}")
+	@ApiModelProperty(value = "${swagger.user-dto.id}", position = 1)
 	private Long id;
 
 	/*
@@ -50,12 +52,6 @@ public class UserDTO {
 	private String lastName;
 
 	/*
-	 * Year Of the Registration
-	 */
-	@ApiModelProperty(value = "${swagger.user-dto.yearOfRegistration}")
-	private Date yearOfRegistration;
-
-	/*
 	 * User Phone Number
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.phoneNumber}")
@@ -68,12 +64,6 @@ public class UserDTO {
 	private String profilePicture;
 
 	/*
-	 * Sex of the user
-	 */
-	@ApiModelProperty(value = "${swagger.user-dto.sex}")
-	private String sex;
-
-	/*
 	 * User Adresse
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.address}")
@@ -84,4 +74,22 @@ public class UserDTO {
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
 	private Date dateOfRegistration;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean accountNonExpired;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean accountNonLocked;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean credentialsNonExpired;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean enabled;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private String authorities;
 }

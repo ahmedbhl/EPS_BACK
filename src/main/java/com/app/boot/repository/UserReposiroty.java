@@ -11,5 +11,7 @@ import com.app.boot.model.User;
 public interface UserReposiroty extends JpaRepository<User, Long> {
 
 	Optional<User> getUserByEmail(String email);
+	
+	Optional<User> getUserByEmailAndPassword(String email, String password);
 
 }

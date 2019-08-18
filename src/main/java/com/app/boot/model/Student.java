@@ -1,11 +1,14 @@
 package com.app.boot.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Student extends User {
+public class Student extends User implements Serializable {
 
 	/**
 	 * 
@@ -27,8 +30,9 @@ public class Student extends User {
 
 	private String gender;
 
-	@ManyToMany(mappedBy = "students")
-	private Set<Establishment> establishments;
+	@ManyToOne
+	@JoinColumn(name = "idEstablishment")
+	private Establishment establishment;
 
 	@ManyToMany(mappedBy = "students")
 	private Set<Class> classes;

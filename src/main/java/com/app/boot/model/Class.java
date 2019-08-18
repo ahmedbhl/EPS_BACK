@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,10 +44,7 @@ public class Class implements Serializable {
 
 	private String invitationCode;
 
-	@ManyToOne
-	@JoinColumn(name = "idEstablishment")
-	private Establishment establishment;
-
+	@JsonIgnore
 	@OneToMany(mappedBy = "classe", cascade = { CascadeType.ALL })
 	private List<Post> posts;
 
@@ -61,6 +60,7 @@ public class Class implements Serializable {
 					@JoinColumn(name = "students_id", referencedColumnName = "id") })
 	private Set<Student> students;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "classe", cascade = { CascadeType.ALL })
 	private Set<Course> courses;
 
