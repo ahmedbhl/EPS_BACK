@@ -1,7 +1,5 @@
 package com.app.boot.dto;
 
-import java.util.Set;
-
 import com.app.boot.model.Class;
 import com.app.boot.model.Professor;
 
@@ -21,10 +19,10 @@ public class CourseDTO {
 
 	@ApiModelProperty(value = "${swagger.course-dto.id}")
 	private Long id;
-	
+
 	@ApiModelProperty(value = "${swagger.course-dto.courseName}")
 	private String courseName;
-	
+
 	@ApiModelProperty(value = "${swagger.course-dto.description}")
 	private String description;
 
@@ -32,6 +30,6 @@ public class CourseDTO {
 	private Class classe;
 
 	@ApiModelProperty(value = "${swagger.course-dto.professors}")
-	private Set<Professor> professors;
+	private Professor professor;
 
 }
