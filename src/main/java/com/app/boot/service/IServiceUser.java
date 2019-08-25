@@ -53,5 +53,14 @@ public interface IServiceUser {
 	 * @return
 	 */
 	User deleteUser(Long id);
+	
+	/**
+	 * acivate the user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User acivateUser(Long id);
+
 
 }

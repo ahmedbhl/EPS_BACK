@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -436,14 +435,10 @@ public class UserRestController {
 			@ApiParam(value = "${swagger.user-rest-controller.activateUser.user.key}") @PathVariable("key") String key) {
 		try {
 			if (key != null) {
-				Optional<User> user = userService.getUserByid(Long.parseLong(key.substring(13)));
-				if (user.isPresent()) {
-					user.get().setEnabled(true);
-					// Update the user
-					User updUser = userService.updateUser(user.get());
-					logUserInfo(updUser, "User Activated With Success User");
-					return ResponseEntity.status(HttpStatus.OK).body(true);
-				}
+				// Update the user
+				User updUser = userService.acivateUser(Long.parseLong(key.substring(13)));
+				logUserInfo(updUser, "User Activated With Success User");
+				return ResponseEntity.status(HttpStatus.OK).body(updUser.isEnabled());
 			}
 			return ResponseEntity.notFound().build();
 

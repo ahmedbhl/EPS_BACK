@@ -46,6 +46,7 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@Column(nullable = false, unique = true)
 	private String email;
 
 	private String password;
@@ -65,13 +66,13 @@ public class User implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime dateOfRegistration;
 
-	@Column( nullable = true)
+	@Column(nullable = true)
 	private String phoneNumber;
 
-	@Column( nullable = true)
+	@Column(nullable = true)
 	private String profilePicture;
 
-	@Column( nullable = true)
+	@Column(nullable = true)
 	private String address;
 
 	private boolean enabled;

@@ -116,4 +116,15 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 		return optionalUser.map(CustomUserDetails::new).get();
 	}
 
+	@Override
+	public User acivateUser(Long id) {
+		Optional<User> activatedUser = userRepository.findById(id);
+		if (activatedUser.isPresent()) {
+			activatedUser.get().setEnabled(true);
+			return userRepository.save(activatedUser.get());
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(), id.toString());
+		}
+	}
+
 }
