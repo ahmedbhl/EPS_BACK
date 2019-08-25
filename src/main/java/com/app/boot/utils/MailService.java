@@ -110,4 +110,34 @@ public class MailService {
 		javaMailSender.send(mimeMessage);
 	}
 
+	/**
+	 * This fucntion is used to send mail with html text or reset Password.
+	 * 
+	 * @param user
+	 * @throws MailException
+	 * @throws MessagingException
+	 */
+	public void sendResetPassword(User user) throws MailException, MessagingException {
+
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+		helper.setTo(user.getEmail());
+		helper.setSubject("Reset Your Educational Personal Space Password");
+		helper.setText(
+				"<html> <body><div style='align-items: center;text-align:center;background-color: aliceblue;height: 270px;padding: 10px;'><h1 style=' color: darkblue; font-family: cursive;'>"
+						+"<h1 style='padding-top:0px;font-family:Helvetica neue,Helvetica,Arial,Verdana,sans-serif;color:#205081;font-size:20px;line-height:32px;text-align:left;font-weight:bold'>Don't worry, we all forget sometimes</h1><hr>"
+						+ "	Hi " + user.getFirstName() + "&nbsp;" + user.getLastName()
+						+ " </h1><p style='font-size: large;font-family: cursive;'>You've recently asked to reset the password for this eps account:</p>"
+						+ "<h2 style='font-size: large;font-family: cursive;'>Your username : " + user.getEmail()
+						+ "</h2>"
+						+ "<p style='font-size: large;font-family: cursive;'>To update your password, click the button below:</p>"
+						+ "<a href='https://eps-project-319b4.firebaseapp.com/reset?email=" + user.getEmail() + "&key="
+						+ user.getPassword()
+						+ "' style='width:220px;border:none;background-color:#1e5bc6;border-radius:20px;color:#ffffff;display:inline-block;text-transform:uppercase;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:14px;font-weight:bold;line-height:45px;text-align:center;text-decoration:none'>Reset my password</a></div></body></html>",
+				true);
+		javaMailSender.send(mimeMessage);
+	}
+
 }

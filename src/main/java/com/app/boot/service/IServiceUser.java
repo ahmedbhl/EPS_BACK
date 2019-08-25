@@ -62,5 +62,12 @@ public interface IServiceUser {
 	 */
 	User acivateUser(Long id);
 
+	/**
+	 * reset the user password
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User resetUserPassword(User user);
 
 }

@@ -127,4 +127,17 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 		}
 	}
 
+	@Override
+	public User resetUserPassword(User user) {
+		Optional<User> resetedUserPassword = userRepository.findById(user.getId());
+		if (resetedUserPassword.isPresent()) {
+			String encryptPassword = passwordEncoder.encode(user.getPassword());
+			resetedUserPassword.get().setPassword(encryptPassword);
+			return userRepository.save(resetedUserPassword.get());
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+					user.getId().toString());
+		}
+	}
+
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -440,10 +441,101 @@ public class UserRestController {
 				logUserInfo(updUser, "User Activated With Success User");
 				return ResponseEntity.status(HttpStatus.OK).body(updUser.isEnabled());
 			}
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
 
 		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+	}
+
+	/**
+	 * Check if the User Exist By email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/exist/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.exist.value}", notes = "${swagger.user-rest-controller.exist.notes}")
+	public ResponseEntity<Boolean> existUser(
+			@ApiParam(value = "${swagger.user-rest-controller.exist.email}") @PathVariable("email") String email) {
+		try {
+			if (email != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null) {
+					logUserInfo(existedUser, "Check Existed User");
+					mailService.sendResetPassword(existedUser);
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+	}
+
+	/**
+	 * Check if the User Exist By email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/reset", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.reset.value}", notes = "${swagger.user-rest-controller.reset.notes}")
+	public ResponseEntity<Boolean> resetUser(
+			@ApiParam(value = "${swagger.user-rest-controller.reset.email}") @RequestParam(name = "email") String email,
+			@ApiParam(value = "${swagger.user-rest-controller.reset.password}") @RequestParam(name = "password") String password,
+			@ApiParam(value = "${swagger.user-rest-controller.reset.key}") @RequestParam(name = "key") String key) {
+		try {
+			if (email != null && key != null && password != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null && existedUser.getPassword().equalsIgnoreCase(key)) {
+					existedUser.setPassword(password);
+					userService.resetUserPassword(existedUser);
+					logUserInfo(existedUser, "Reset the User Password");
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+	}
+
+	/**
+	 * Check the key for reset password
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.check.value}", notes = "${swagger.user-rest-controller.check.notes}")
+	public ResponseEntity<Boolean> checkUserKey(
+			@ApiParam(value = "${swagger.user-rest-controller.check.email}") @RequestParam(name = "email") String email,
+			@ApiParam(value = "${swagger.user-rest-controller.check.password}") @RequestParam(name = "key") String key) {
+		try {
+			if (email != null && key != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null && existedUser.getPassword().equalsIgnoreCase(key)) {
+					logUserInfo(existedUser, "Check User Key");
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 
