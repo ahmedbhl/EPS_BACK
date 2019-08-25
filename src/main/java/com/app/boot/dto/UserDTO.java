@@ -1,6 +1,5 @@
 package com.app.boot.dto;
 
-import java.util.Date;
 import java.util.Set;
 
 import com.app.boot.model.Role;
@@ -73,23 +72,23 @@ public class UserDTO {
 	 * Creation Date
 	 */
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
-	private Date dateOfRegistration;
+	private String dateOfRegistration;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean accountNonExpired;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean accountNonLocked;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean credentialsNonExpired;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean enabled;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private String authorities;
 }

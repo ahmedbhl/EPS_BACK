@@ -49,7 +49,7 @@ public class MailService {
 		 */
 
 		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo("ase.bouhlel@gmail.com");
+		mail.setTo(user.getEmail());
 		mail.setSubject("Testing Mail API");
 		mail.setText("Hurray ! You have done that dude...");
 
@@ -79,6 +79,34 @@ public class MailService {
 		ClassPathResource classPathResource = new ClassPathResource("Attachment.pdf");
 		helper.addAttachment(classPathResource.getFilename(), classPathResource);
 
+		javaMailSender.send(mimeMessage);
+	}
+
+	/**
+	 * This fucntion is used to send mail with html text.
+	 * 
+	 * @param user
+	 * @throws MailException
+	 * @throws MessagingException
+	 */
+	public void sendEmailRegistration(User user) throws MailException, MessagingException {
+
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+		helper.setTo(user.getEmail());
+		helper.setSubject("Thank you for your registration !");
+		helper.setText(
+				"<html> <body><div style='align-items: center;text-align:center;background-color: aliceblue;height: 270px;padding: 10px;'><h1 style=' color: darkblue; font-family: cursive;'>Hello "
+						+ user.getFirstName() + "&nbsp;" + user.getLastName()
+						+ " </h1><p style='font-size: large;font-family: cursive;'>Your registration has been completed.</p>"
+						+ " <p style='font-size: large;font-family: cursive;'>The whole team of educational personal space welcomes you and thanks you for your trust</p>"
+						+ "<h2 style='font-size: large;font-family: cursive;'>Your username : " + user.getEmail()
+						+ "</h2>" + "<a href='https://eps-project-319b4.firebaseapp.com/signup?key=eps"
+						+ user.getPassword().substring(0, 10) + user.getId()
+						+ "' style='width:220px;border:none;background-color:#1e5bc6;border-radius:20px;color:#ffffff;display:inline-block;text-transform:uppercase;font-family:Arial,Helvetica,Geneva,sans-serif;font-size:14px;font-weight:bold;line-height:45px;text-align:center;text-decoration:none'>I activate right now</a></div></body></html>",
+				true);
 		javaMailSender.send(mimeMessage);
 	}
 

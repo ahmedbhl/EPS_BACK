@@ -1,11 +1,13 @@
 package com.app.boot.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +42,7 @@ import com.app.boot.service.IServiceProfessor;
 import com.app.boot.service.IServiceRole;
 import com.app.boot.service.IServiceStudent;
 import com.app.boot.service.IServiceUser;
+import com.app.boot.utils.MailService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,6 +80,9 @@ public class UserRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@Autowired
+	MailService mailService;
+
 	/**
 	 * Adding pairing message
 	 */
@@ -98,7 +105,7 @@ public class UserRestController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
 
 	@ResponseBody
-	@GetMapping(path="/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<UserDTO> user(Principal user) {
 		return ResponseEntity.ok(
@@ -136,12 +143,15 @@ public class UserRestController {
 		User user = modelMapper.map(userDTO, User.class);
 		final UserDTO newUserDTO;
 		try {
+			user.setDateOfRegistration(LocalDateTime.now());
 			// Save the new user
 			User createdUser = userService.createUser(user);
+
 			// Map to DTO
 			newUserDTO = modelMapper.map(createdUser, UserDTO.class);
 			logUserInfo(createdUser, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdUser);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newUserDTO);
@@ -161,15 +171,19 @@ public class UserRestController {
 			@ApiParam(value = "${swagger.user-rest-controller.createAdministration.administration}", required = true) @Valid @RequestBody UserDTO AdministrationDTO) {
 		// Map to model
 		Administration administration = modelMapper.map(AdministrationDTO, Administration.class);
+
 		final UserDTO newAdministrationDTO;
 		try {
 			administration.setRoles(Arrays.asList(roleService.getRoleByName("ADMINISTRATION")));
+			administration.setDateOfRegistration(LocalDateTime.now());
 			// Save the new Administration
 			Administration createdAdministration = administrationService.createAdministration(administration);
 			// Map to DTO
 			newAdministrationDTO = modelMapper.map(createdAdministration, UserDTO.class);
 			logUserInfo(createdAdministration, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdAdministration);
+
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newAdministrationDTO);
@@ -192,12 +206,15 @@ public class UserRestController {
 		final UserDTO newStudentDTO;
 		try {
 			student.setRoles(Arrays.asList(roleService.getRoleByName("STUDENT")));
+			student.setDateOfRegistration(LocalDateTime.now());
+
 			// Save the new Student
 			Student createdStudent = studentService.createStudent(student);
 			// Map to DTO
 			newStudentDTO = modelMapper.map(createdStudent, UserDTO.class);
 			logUserInfo(createdStudent, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdStudent);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newStudentDTO);
@@ -215,17 +232,20 @@ public class UserRestController {
 	@ApiOperation(value = "${swagger.user-rest-controller.createProfessor.value}", notes = "${swagger.user-rest-controller.createProfessor.notes}")
 	public ResponseEntity<UserDTO> createProfessor(
 			@ApiParam(value = "${swagger.user-rest-controller.createProfessor.professor}", required = true) @Valid @RequestBody UserDTO ProfessorDTO) {
+
 		// Map to model
 		Professor professor = modelMapper.map(ProfessorDTO, Professor.class);
 		final UserDTO newProfessorDTO;
 		try {
 			professor.setRoles(Arrays.asList(roleService.getRoleByName("PROFESSOR")));
+			professor.setDateOfRegistration(LocalDateTime.now());
 			// Save the new Professor
 			Professor createdProfessor = professorService.createProfessor(professor);
 			// Map to DTO
 			newProfessorDTO = modelMapper.map(createdProfessor, UserDTO.class);
 			logUserInfo(createdProfessor, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdProfessor);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newProfessorDTO);
@@ -251,7 +271,7 @@ public class UserRestController {
 		try {
 			if (id != null && userService.getUserByid(id).isPresent()) {
 				user.setId(id);
-				user.setDateOfRegistration(new Date());
+				user.setDateOfRegistration(LocalDateTime.now());
 				// Update the user
 				User updUser = userService.updateUser(user);
 				// Map to dto
@@ -287,7 +307,7 @@ public class UserRestController {
 		try {
 			if (id != null && administrationService.getAdministrationByid(id).isPresent()) {
 				administration.setId(id);
-				administration.setDateOfRegistration(new Date());
+				administration.setDateOfRegistration(LocalDateTime.now());
 				// Update the administration
 				Administration updAdministration = administrationService.updateAdministration(administration);
 				// Map to dto
@@ -323,7 +343,7 @@ public class UserRestController {
 		try {
 			if (id != null && professorService.getProfessorByid(id).isPresent()) {
 				professor.setId(id);
-				professor.setDateOfRegistration(new Date());
+				professor.setDateOfRegistration(LocalDateTime.now());
 				// Update the professor
 				Professor updProfessor = professorService.updateProfessor(professor);
 				// Map to dto
@@ -359,7 +379,7 @@ public class UserRestController {
 		try {
 			if (id != null && studentService.getStudentByid(id).isPresent()) {
 				student.setId(id);
-				student.setDateOfRegistration(new Date());
+				student.setDateOfRegistration(LocalDateTime.now());
 				// Update the student
 				Student updStudent = studentService.updateStudent(student);
 				// Map to dto
@@ -399,6 +419,37 @@ public class UserRestController {
 		}
 
 		return ResponseEntity.ok(user);
+	}
+
+	/**
+	 * Update the User
+	 * 
+	 * @param userDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/activate/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.activateUser.value}", notes = "${swagger.user-rest-controller.update.notes}")
+	public ResponseEntity<Boolean> activateUser(
+			@ApiParam(value = "${swagger.user-rest-controller.activateUser.user.key}") @PathVariable("key") String key) {
+		try {
+			if (key != null) {
+				Optional<User> user = userService.getUserByid(Long.parseLong(key.substring(13)));
+				if (user.isPresent()) {
+					user.get().setEnabled(true);
+					// Update the user
+					User updUser = userService.updateUser(user.get());
+					logUserInfo(updUser, "User Activated With Success User");
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.notFound().build();
+
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	/**
