@@ -72,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/v1/users/reset/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/v1/users/check/**").permitAll()
 				.antMatchers("/api/v1/users/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
+				.antMatchers("/api/v1/library/**").hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR)
 				.antMatchers("/api/v1/establishments/**")
 				.hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR).antMatchers("/api/v1/levels/**")
 				.hasAnyAuthority(SUPER_ADMIN, ADMINISTRATION, STUDENT, PROFESSOR).antMatchers("/api/v1/fields/**")

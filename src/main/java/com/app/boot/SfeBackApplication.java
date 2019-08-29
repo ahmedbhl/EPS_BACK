@@ -18,7 +18,7 @@ public class SfeBackApplication {
 	@Bean("dropboxClient")
 	public DbxClientV2 dropboxClient() throws DbxException {
 		String ACCESS_TOKEN = "ZJuPTOKaC7AAAAAAAAAADHeALcsUbYp4ne47ZdDiblhMqAMC8eZHoOz_6KBjCmOk";
-		DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial");
+		DbxRequestConfig config = new DbxRequestConfig("dropbox/eps");
 		DbxClientV2 client = new DbxClientV2(config, ACCESS_TOKEN);
 		return client;
 	}
