@@ -1,9 +1,5 @@
 package com.app.boot.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.boot.service.impl.ServiceDropbox;
 import com.app.boot.utils.DropboxAction;
 import com.app.boot.utils.DropboxAction.Response;
-import com.dropbox.core.DbxException;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -48,26 +42,23 @@ public class LibraryController {
 	@Autowired
 	ServiceDropbox serviceDropbox;
 
-	/*@PostMapping("/upload") // //new annotation since 4.3
-	public ResponseEntity<String> singleFileUpload(@RequestParam("file") MultipartFile file,
-			RedirectAttributes redirectAttributes) {
-
-		if (file.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
-
-		try {
-			// Get the file and save it somewhere
-			byte[] bytes = file.getBytes();
-			Path path = Paths.get(file.getOriginalFilename());
-			Files.write(path, bytes);
-			serviceDropbox.uploadFile(file, file.getOriginalFilename());
-			return ResponseEntity.status(HttpStatus.OK).body(file.getOriginalFilename());
-
-		} catch (IOException | DbxException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
-	}*/
+	/*
+	 * @PostMapping("/upload") // //new annotation since 4.3 public
+	 * ResponseEntity<String> singleFileUpload(@RequestParam("file")
+	 * MultipartFile file, RedirectAttributes redirectAttributes) {
+	 * 
+	 * if (file.isEmpty()) { return
+	 * ResponseEntity.status(HttpStatus.CONFLICT).build(); }
+	 * 
+	 * try { // Get the file and save it somewhere byte[] bytes =
+	 * file.getBytes(); Path path = Paths.get(file.getOriginalFilename());
+	 * Files.write(path, bytes); serviceDropbox.uploadFile(file,
+	 * file.getOriginalFilename()); return
+	 * ResponseEntity.status(HttpStatus.OK).body(file.getOriginalFilename());
+	 * 
+	 * } catch (IOException | DbxException e) { return
+	 * ResponseEntity.status(HttpStatus.CONFLICT).build(); } }
+	 */
 
 	@PostMapping("/upload")
 	public String handleFileUplad(@RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath)
@@ -98,7 +89,8 @@ public class LibraryController {
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> deleteFile(@RequestBody DropboxAction.Delete delete, BindingResult result) throws Exception {
+	public ResponseEntity<Response> deleteFile(@RequestBody DropboxAction.Delete delete, BindingResult result)
+			throws Exception {
 		serviceDropbox.deleteFile(delete);
 
 		DropboxAction.Response response = new DropboxAction.Response(200, "success");

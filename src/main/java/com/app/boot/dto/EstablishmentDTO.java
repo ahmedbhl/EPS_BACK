@@ -1,7 +1,5 @@
 package com.app.boot.dto;
 
-import java.util.Date;
-
 import com.app.boot.model.Administration;
 
 import io.swagger.annotations.ApiModel;
@@ -28,7 +26,7 @@ public class EstablishmentDTO {
 	private String description;
 
 	@ApiModelProperty(value = "${swagger.establishment-dto.yearOfFoundation}")
-	private Date yearOfFoundation;
+	private String yearOfFoundation;
 
 	@ApiModelProperty(value = "${swagger.establishment-dto.location}")
 	private String location;

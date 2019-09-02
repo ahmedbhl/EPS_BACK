@@ -129,6 +129,22 @@ public class UserRestController {
 	}
 
 	/**
+	 * Get the list of all Administration User
+	 * 
+	 * @return list of all Administration User
+	 */
+	@ResponseBody
+	@GetMapping(value = "/administrations", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.getAllUsers.value}", notes = "${swagger.user-rest-controller.getAllUsers.notes}")
+	public ResponseEntity<List<UserDTO>> getAllAdministrations() {
+		List<Administration> users = administrationService.getAllAdministration();
+		List<UserDTO> usersDTO = users.stream().map(user -> modelMapper.map(user, UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok(usersDTO);
+	}
+
+	/**
 	 * 
 	 * @param userDTO
 	 * @return
@@ -449,6 +465,34 @@ public class UserRestController {
 		}
 	}
 
+	/**
+	 * Update the User
+	 * 
+	 * @param userDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.updateUserStat.value}", notes = "${swagger.user-rest-controller.updateUserStat.notes}")
+	public ResponseEntity<Boolean> updateUserStat(
+			@ApiParam(value = "${swagger.user-rest-controller.updateUserStat.user.id}") @PathVariable("id") Long id) {
+		try {
+			if (id != null) {
+				// Update the user
+				User updUser = userService.updateUserStat(id);
+				logUserInfo(updUser, "the User Status Changed");
+				return ResponseEntity.status(HttpStatus.OK).body(updUser.isEnabled());
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+	}
+	
 	/**
 	 * Check if the User Exist By email
 	 * 
