@@ -145,6 +145,22 @@ public class UserRestController {
 	}
 
 	/**
+	 * Get the list of all Professor User
+	 * 
+	 * @return list of all Professor User
+	 */
+	@ResponseBody
+	@GetMapping(value = "/professors", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.getAllUsers.value}", notes = "${swagger.user-rest-controller.getAllUsers.notes}")
+	public ResponseEntity<List<UserDTO>> getAllProfessors() {
+		List<Professor> users = professorService.getAllProfessor();
+		List<UserDTO> usersDTO = users.stream().map(user -> modelMapper.map(user, UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok(usersDTO);
+	}
+
+	/**
 	 * 
 	 * @param userDTO
 	 * @return
@@ -492,7 +508,7 @@ public class UserRestController {
 
 		}
 	}
-	
+
 	/**
 	 * Check if the User Exist By email
 	 * 

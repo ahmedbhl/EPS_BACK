@@ -2,6 +2,7 @@ package com.app.boot.dto;
 
 import java.util.Set;
 
+import com.app.boot.model.Establishment;
 import com.app.boot.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -74,6 +75,9 @@ public class UserDTO {
 	@ApiModelProperty(value = "${swagger.user-dto.creationDate}")
 	private String dateOfRegistration;
 
+	@ApiModelProperty(value = "${swagger.user-dto.establishment}")
+	private Establishment establishment;
+	
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 

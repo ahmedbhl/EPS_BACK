@@ -1,5 +1,6 @@
 package com.app.boot.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,16 @@ public class ServiceProfessor implements IServiceProfessor {
 	@Override
 	public Optional<Professor> getProfessorByid(Long id) {
 		return professorRepository.findById(id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.app.boot.IServiceProfessor#getAllProfessor
+	 */
+	@Override
+	public List<Professor> getAllProfessor() {
+		return professorRepository.findAll();
 	}
 
 }
