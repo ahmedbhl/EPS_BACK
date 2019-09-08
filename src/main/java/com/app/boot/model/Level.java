@@ -16,8 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,12 +45,12 @@ public class Level implements Serializable {
 
 	private String description;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
+	// @JsonProperty(access = Access.WRITE_ONLY)
 	@ManyToOne
 	@JoinColumn(name = "idEstablishment")
 	private Establishment establishment;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "level", cascade = { CascadeType.REMOVE,CascadeType.MERGE})
+	@OneToMany(mappedBy = "level", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
 	private Set<Field> fields;
 }

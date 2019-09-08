@@ -1,6 +1,7 @@
 package com.app.boot.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -172,18 +173,18 @@ public class ClassRestController {
 	public ResponseEntity<Class> deleteById(
 			@ApiParam(value = "${swagger.class-rest-controller.delete.id}", required = true) @PathVariable("id") Long id) {
 
-		final Class classEntity = serviceClass.getClassById(id).get();
+		final Optional<Class> classEntity = serviceClass.getClassById(id);
 		try {
-			if (classEntity == null) {
+			if (!classEntity.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
 			serviceClass.DeleteById(id);
-			logClassInfo(classEntity, DELETE_MESSAGE);
+			logClassInfo(classEntity.get(), DELETE_MESSAGE);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(classEntity);
+		return ResponseEntity.ok(classEntity.get());
 	}
 
 	@ResponseBody
@@ -194,19 +195,19 @@ public class ClassRestController {
 			@ApiParam(value = "${swagger.class-rest-controller.getById.id}", required = true) @PathVariable("id") Long id) {
 		final ClassDTO newClassDTO;
 
-		final Class classEntity = serviceClass.getClassById(id).get();
+		final Optional<Class> classEntity = serviceClass.getClassById(id);
 		try {
-			if (classEntity == null) {
+			if (!classEntity.isPresent()) {
 				return ResponseEntity.notFound().build();
 			}
-			newClassDTO = modelMapper.map(classEntity, ClassDTO.class);
+			newClassDTO = modelMapper.map(classEntity.get(), ClassDTO.class);
 
 			ResponseEntity.ok(newClassDTO);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(classEntity);
+		return ResponseEntity.ok(classEntity.get());
 	}
 
 	@ResponseBody
