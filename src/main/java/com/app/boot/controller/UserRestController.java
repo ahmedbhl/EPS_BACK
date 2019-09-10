@@ -446,11 +446,11 @@ public class UserRestController {
 				return ResponseEntity.notFound().build();
 			}
 			logUserInfo(user, DELETE_MESSAGE);
+			return ResponseEntity.status(HttpStatus.OK).body(user);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(user);
 	}
 
 	/**

@@ -56,7 +56,7 @@ public class Class implements Serializable {
 	private Set<Professor> professors;
 
 	@JsonIgnore
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinTable(name = "class_students", joinColumns = {
 			@JoinColumn(name = "class_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "students_id", referencedColumnName = "id") })
