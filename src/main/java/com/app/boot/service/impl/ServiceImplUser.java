@@ -49,6 +49,17 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.app.boot.IServiceUser#findAll
+	 */
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<User> getAllAdministration() {
+		return userRepository.findAll();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.app.boot.IServiceUser#getUserByid
 	 */
 	@Override
@@ -114,6 +125,41 @@ public class ServiceImplUser implements IServiceUser, UserDetailsService {
 		Optional<User> optionalUser = userRepository.getUserByEmail(email);
 		optionalUser.orElseThrow(() -> new UsernameNotFoundException("Email Not Found"));
 		return optionalUser.map(CustomUserDetails::new).get();
+	}
+
+	@Override
+	public User acivateUser(Long id) {
+		Optional<User> activatedUser = userRepository.findById(id);
+		if (activatedUser.isPresent()) {
+			activatedUser.get().setEnabled(true);
+			return userRepository.save(activatedUser.get());
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(), id.toString());
+		}
+	}
+
+	@Override
+	public User resetUserPassword(User user) {
+		Optional<User> resetedUserPassword = userRepository.findById(user.getId());
+		if (resetedUserPassword.isPresent()) {
+			String encryptPassword = passwordEncoder.encode(user.getPassword());
+			resetedUserPassword.get().setPassword(encryptPassword);
+			return userRepository.save(resetedUserPassword.get());
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
+					user.getId().toString());
+		}
+	}
+
+	@Override
+	public User updateUserStat(Long id) {
+		Optional<User> activatedUser = userRepository.findById(id);
+		if (activatedUser.isPresent()) {
+			activatedUser.get().setEnabled(!activatedUser.get().isEnabled());
+			return userRepository.save(activatedUser.get());
+		} else {
+			throw new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(), id.toString());
+		}
 	}
 
 }

@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +39,7 @@ public class Professor extends User implements Serializable {
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	private List<Post> posts;
 
-	@ManyToMany(mappedBy = "professors")
+	@JsonIgnore
+	@OneToMany(mappedBy = "professor", cascade = { CascadeType.ALL })
 	private Set<Course> courses;
 }

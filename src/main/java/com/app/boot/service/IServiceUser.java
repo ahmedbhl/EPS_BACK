@@ -54,4 +54,35 @@ public interface IServiceUser {
 	 */
 	User deleteUser(Long id);
 
+	/**
+	 * acivate the user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User acivateUser(Long id);
+
+	/**
+	 * acivate the user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User updateUserStat(Long id);
+
+	/**
+	 * reset the user password
+	 * 
+	 * @param id
+	 * @return
+	 */
+	User resetUserPassword(User user);
+
+	/**
+	 * Get the list of all Administration
+	 * 
+	 * @return
+	 */
+	List<User> getAllAdministration();
+
 }

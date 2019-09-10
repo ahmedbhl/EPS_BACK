@@ -1,6 +1,5 @@
 package com.app.boot.dto;
 
-import com.app.boot.model.Establishment;
 import com.app.boot.model.Field;
 
 import io.swagger.annotations.ApiModel;
@@ -28,9 +27,6 @@ public class ClassDTO {
 
 	@ApiModelProperty(value = "${swagger.class-dto.invitationCode}")
 	private String invitationCode;
-
-	@ApiModelProperty(value = "${swagger.class-dto.establishment}")
-	private Establishment establishment;
 
 	@ApiModelProperty(value = "${swagger.class-dto.field}")
 	private Field field;

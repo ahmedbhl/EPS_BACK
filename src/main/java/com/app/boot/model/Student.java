@@ -34,8 +34,8 @@ public class Student extends User implements Serializable {
 	@JoinColumn(name = "idEstablishment")
 	private Establishment establishment;
 
-	@ManyToMany(mappedBy = "students")
-	private Set<Class> classes;
+	@ManyToMany(mappedBy = "students", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	private transient Set<Class> classes;
 
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	private List<Post> posts;

@@ -45,11 +45,12 @@ public class Level implements Serializable {
 
 	private String description;
 
+	// @JsonProperty(access = Access.WRITE_ONLY)
 	@ManyToOne
 	@JoinColumn(name = "idEstablishment")
 	private Establishment establishment;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "level", cascade = { CascadeType.REMOVE,CascadeType.MERGE})
+	@OneToMany(mappedBy = "level", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
 	private Set<Field> fields;
 }

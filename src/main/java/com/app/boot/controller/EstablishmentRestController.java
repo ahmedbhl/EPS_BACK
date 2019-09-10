@@ -1,6 +1,7 @@
 package com.app.boot.controller;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -113,9 +114,11 @@ public class EstablishmentRestController {
 	@ApiOperation(value = "${swagger.establishment-rest-controller.createEstablishment.value}", notes = "${swagger.establishment-rest-controller.createEstablishment.notes}")
 	public ResponseEntity<EstablishmentDTO> createEstablishment(
 			@ApiParam(value = "${swagger.establishment-rest-controller.createEstablishment.establishment}", required = true) @Valid @RequestBody EstablishmentDTO establishmentDTO) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 		// Map to model
 		Establishment establishment = modelMapper.map(establishmentDTO, Establishment.class);
+		establishment.setYearOfFoundation(LocalDateTime.parse(establishmentDTO.getYearOfFoundation(),formatter));
 		final EstablishmentDTO newEstablishmentDTO;
 		try {
 			Administration administration = serviceAdministration
@@ -165,7 +168,7 @@ public class EstablishmentRestController {
 							() -> new CodeOperationException(CodeOperationException.CodeError.CODE_NOT_FOUND.name(),
 									establishmentDTO.getId().toString()));
 			establishment.setAdministration(administration);
-			establishment.setYearOfFoundation(new Date());
+			establishment.setYearOfFoundation(LocalDateTime.now());
 			establishment.setId(id);
 			// Update the establishment
 			Establishment updatedEstablishment = serviceEstablishment.Update(establishment);

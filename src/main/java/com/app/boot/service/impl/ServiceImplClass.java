@@ -47,8 +47,7 @@ public class ServiceImplClass implements IServiceClass {
 
 	@Override
 	public Optional<Class> getClassById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return classRepository.findById(id);
 	}
 
 	@Override

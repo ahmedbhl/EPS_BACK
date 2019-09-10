@@ -1,10 +1,11 @@
 package com.app.boot.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,8 +17,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +46,7 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@Column(nullable = false, unique = true)
 	private String email;
 
 	private String password;
@@ -50,19 +55,24 @@ public class User implements Serializable {
 
 	private String lastName;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	@JoinTable(name = "users_role", joinColumns = {
 			@JoinColumn(name = "user_id", referencedColumnName = "id", unique = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "role_id", referencedColumnName = "id", unique = false) })
 	private List<Role> roles;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateOfRegistration;
+	// @Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss", iso = ISO.DATE_TIME)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime dateOfRegistration;
 
+	@Column(nullable = true)
 	private String phoneNumber;
 
+	@Column(nullable = true)
 	private String profilePicture;
 
+	@Column(nullable = true)
 	private String address;
 
 	private boolean enabled;

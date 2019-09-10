@@ -1,11 +1,12 @@
 package com.app.boot.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +42,7 @@ import com.app.boot.service.IServiceProfessor;
 import com.app.boot.service.IServiceRole;
 import com.app.boot.service.IServiceStudent;
 import com.app.boot.service.IServiceUser;
+import com.app.boot.utils.MailService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,6 +80,9 @@ public class UserRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@Autowired
+	MailService mailService;
+
 	/**
 	 * Adding pairing message
 	 */
@@ -98,7 +105,7 @@ public class UserRestController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
 
 	@ResponseBody
-	@GetMapping(path="/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/currentUser", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<UserDTO> user(Principal user) {
 		return ResponseEntity.ok(
@@ -122,6 +129,38 @@ public class UserRestController {
 	}
 
 	/**
+	 * Get the list of all Administration User
+	 * 
+	 * @return list of all Administration User
+	 */
+	@ResponseBody
+	@GetMapping(value = "/administrations", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.getAllUsers.value}", notes = "${swagger.user-rest-controller.getAllUsers.notes}")
+	public ResponseEntity<List<UserDTO>> getAllAdministrations() {
+		List<Administration> users = administrationService.getAllAdministration();
+		List<UserDTO> usersDTO = users.stream().map(user -> modelMapper.map(user, UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok(usersDTO);
+	}
+
+	/**
+	 * Get the list of all Professor User
+	 * 
+	 * @return list of all Professor User
+	 */
+	@ResponseBody
+	@GetMapping(value = "/professors", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.getAllUsers.value}", notes = "${swagger.user-rest-controller.getAllUsers.notes}")
+	public ResponseEntity<List<UserDTO>> getAllProfessors() {
+		List<Professor> users = professorService.getAllProfessor();
+		List<UserDTO> usersDTO = users.stream().map(user -> modelMapper.map(user, UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok(usersDTO);
+	}
+
+	/**
 	 * 
 	 * @param userDTO
 	 * @return
@@ -136,12 +175,15 @@ public class UserRestController {
 		User user = modelMapper.map(userDTO, User.class);
 		final UserDTO newUserDTO;
 		try {
+			user.setDateOfRegistration(LocalDateTime.now());
 			// Save the new user
 			User createdUser = userService.createUser(user);
+
 			// Map to DTO
 			newUserDTO = modelMapper.map(createdUser, UserDTO.class);
 			logUserInfo(createdUser, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdUser);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newUserDTO);
@@ -161,15 +203,19 @@ public class UserRestController {
 			@ApiParam(value = "${swagger.user-rest-controller.createAdministration.administration}", required = true) @Valid @RequestBody UserDTO AdministrationDTO) {
 		// Map to model
 		Administration administration = modelMapper.map(AdministrationDTO, Administration.class);
+
 		final UserDTO newAdministrationDTO;
 		try {
 			administration.setRoles(Arrays.asList(roleService.getRoleByName("ADMINISTRATION")));
+			administration.setDateOfRegistration(LocalDateTime.now());
 			// Save the new Administration
 			Administration createdAdministration = administrationService.createAdministration(administration);
 			// Map to DTO
 			newAdministrationDTO = modelMapper.map(createdAdministration, UserDTO.class);
 			logUserInfo(createdAdministration, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdAdministration);
+
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newAdministrationDTO);
@@ -192,12 +238,15 @@ public class UserRestController {
 		final UserDTO newStudentDTO;
 		try {
 			student.setRoles(Arrays.asList(roleService.getRoleByName("STUDENT")));
+			student.setDateOfRegistration(LocalDateTime.now());
+
 			// Save the new Student
 			Student createdStudent = studentService.createStudent(student);
 			// Map to DTO
 			newStudentDTO = modelMapper.map(createdStudent, UserDTO.class);
 			logUserInfo(createdStudent, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdStudent);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newStudentDTO);
@@ -215,17 +264,20 @@ public class UserRestController {
 	@ApiOperation(value = "${swagger.user-rest-controller.createProfessor.value}", notes = "${swagger.user-rest-controller.createProfessor.notes}")
 	public ResponseEntity<UserDTO> createProfessor(
 			@ApiParam(value = "${swagger.user-rest-controller.createProfessor.professor}", required = true) @Valid @RequestBody UserDTO ProfessorDTO) {
+
 		// Map to model
 		Professor professor = modelMapper.map(ProfessorDTO, Professor.class);
 		final UserDTO newProfessorDTO;
 		try {
 			professor.setRoles(Arrays.asList(roleService.getRoleByName("PROFESSOR")));
+			professor.setDateOfRegistration(LocalDateTime.now());
 			// Save the new Professor
 			Professor createdProfessor = professorService.createProfessor(professor);
 			// Map to DTO
 			newProfessorDTO = modelMapper.map(createdProfessor, UserDTO.class);
 			logUserInfo(createdProfessor, ADDING_MESSAGE);
-		} catch (CodeOperationException e) {
+			mailService.sendEmailRegistration(createdProfessor);
+		} catch (CodeOperationException | MailException | MessagingException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(newProfessorDTO);
@@ -251,7 +303,7 @@ public class UserRestController {
 		try {
 			if (id != null && userService.getUserByid(id).isPresent()) {
 				user.setId(id);
-				user.setDateOfRegistration(new Date());
+				user.setDateOfRegistration(LocalDateTime.now());
 				// Update the user
 				User updUser = userService.updateUser(user);
 				// Map to dto
@@ -287,7 +339,7 @@ public class UserRestController {
 		try {
 			if (id != null && administrationService.getAdministrationByid(id).isPresent()) {
 				administration.setId(id);
-				administration.setDateOfRegistration(new Date());
+				administration.setDateOfRegistration(LocalDateTime.now());
 				// Update the administration
 				Administration updAdministration = administrationService.updateAdministration(administration);
 				// Map to dto
@@ -323,7 +375,7 @@ public class UserRestController {
 		try {
 			if (id != null && professorService.getProfessorByid(id).isPresent()) {
 				professor.setId(id);
-				professor.setDateOfRegistration(new Date());
+				professor.setDateOfRegistration(LocalDateTime.now());
 				// Update the professor
 				Professor updProfessor = professorService.updateProfessor(professor);
 				// Map to dto
@@ -359,7 +411,7 @@ public class UserRestController {
 		try {
 			if (id != null && studentService.getStudentByid(id).isPresent()) {
 				student.setId(id);
-				student.setDateOfRegistration(new Date());
+				student.setDateOfRegistration(LocalDateTime.now());
 				// Update the student
 				Student updStudent = studentService.updateStudent(student);
 				// Map to dto
@@ -394,11 +446,157 @@ public class UserRestController {
 				return ResponseEntity.notFound().build();
 			}
 			logUserInfo(user, DELETE_MESSAGE);
+			return ResponseEntity.status(HttpStatus.OK).body(user);
 		} catch (Exception e) {
 			return ResponseEntity.notFound().build();
 		}
 
-		return ResponseEntity.ok(user);
+	}
+
+	/**
+	 * Update the User
+	 * 
+	 * @param userDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/activate/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.activateUser.value}", notes = "${swagger.user-rest-controller.update.notes}")
+	public ResponseEntity<Boolean> activateUser(
+			@ApiParam(value = "${swagger.user-rest-controller.activateUser.user.key}") @PathVariable("key") String key) {
+		try {
+			if (key != null) {
+				// Update the user
+				User updUser = userService.acivateUser(Long.parseLong(key.substring(13)));
+				logUserInfo(updUser, "User Activated With Success User");
+				return ResponseEntity.status(HttpStatus.OK).body(updUser.isEnabled());
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+	}
+
+	/**
+	 * Update the User
+	 * 
+	 * @param userDTO
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@PutMapping(value = "/status/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.updateUserStat.value}", notes = "${swagger.user-rest-controller.updateUserStat.notes}")
+	public ResponseEntity<Boolean> updateUserStat(
+			@ApiParam(value = "${swagger.user-rest-controller.updateUserStat.user.id}") @PathVariable("id") Long id) {
+		try {
+			if (id != null) {
+				// Update the user
+				User updUser = userService.updateUserStat(id);
+				logUserInfo(updUser, "the User Status Changed");
+				return ResponseEntity.status(HttpStatus.OK).body(updUser.isEnabled());
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+	}
+
+	/**
+	 * Check if the User Exist By email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/exist/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.exist.value}", notes = "${swagger.user-rest-controller.exist.notes}")
+	public ResponseEntity<Boolean> existUser(
+			@ApiParam(value = "${swagger.user-rest-controller.exist.email}") @PathVariable("email") String email) {
+		try {
+			if (email != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null) {
+					logUserInfo(existedUser, "Check Existed User");
+					mailService.sendResetPassword(existedUser);
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+	}
+
+	/**
+	 * Check if the User Exist By email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/reset", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.reset.value}", notes = "${swagger.user-rest-controller.reset.notes}")
+	public ResponseEntity<Boolean> resetUser(
+			@ApiParam(value = "${swagger.user-rest-controller.reset.email}") @RequestParam(name = "email") String email,
+			@ApiParam(value = "${swagger.user-rest-controller.reset.password}") @RequestParam(name = "password") String password,
+			@ApiParam(value = "${swagger.user-rest-controller.reset.key}") @RequestParam(name = "key") String key) {
+		try {
+			if (email != null && key != null && password != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null && existedUser.getPassword().equalsIgnoreCase(key)) {
+					existedUser.setPassword(password);
+					userService.resetUserPassword(existedUser);
+					logUserInfo(existedUser, "Reset the User Password");
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+	}
+
+	/**
+	 * Check the key for reset password
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "${swagger.user-rest-controller.check.value}", notes = "${swagger.user-rest-controller.check.notes}")
+	public ResponseEntity<Boolean> checkUserKey(
+			@ApiParam(value = "${swagger.user-rest-controller.check.email}") @RequestParam(name = "email") String email,
+			@ApiParam(value = "${swagger.user-rest-controller.check.password}") @RequestParam(name = "key") String key) {
+		try {
+			if (email != null && key != null) {
+				// Update the user
+				User existedUser = userService.getUserByEmail(email);
+				if (existedUser != null && existedUser.getPassword().equalsIgnoreCase(key)) {
+					logUserInfo(existedUser, "Check User Key");
+					return ResponseEntity.status(HttpStatus.OK).body(true);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 	}
 
 	/**

@@ -48,13 +48,15 @@ public class Class implements Serializable {
 	@OneToMany(mappedBy = "classe", cascade = { CascadeType.ALL })
 	private List<Post> posts;
 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "class_professors", joinColumns = {
 			@JoinColumn(name = "class_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "professors_id", referencedColumnName = "id") })
 	private Set<Professor> professors;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinTable(name = "class_students", joinColumns = {
 			@JoinColumn(name = "class_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "students_id", referencedColumnName = "id") })

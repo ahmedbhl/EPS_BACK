@@ -1,5 +1,6 @@
 package com.app.boot.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.app.boot.model.Administration;
@@ -29,4 +30,10 @@ public interface IServiceAdministration {
 	 * @return the Administration by ID
 	 */
 	Optional<Administration> getAdministrationByid(Long id);
+
+	/**
+	 * Get all administrations
+	 * @return
+	 */
+	List<Administration> getAllAdministration();
 }
