@@ -16,6 +16,7 @@ A learning platform designed to provide educators, administrators and learners w
 
 ### Install the project and Running Locally
 
+Make sure you have Java and Maven installed. Also, install the Heroku CLI.
 
 ```console
 $ git clone https://github.com/ahmedbhl/EPS_BACK.git
